@@ -5,94 +5,221 @@ class Paddle {
         this.x = x;
         this.y = y;
 
-        this.width = 25;
+
+        this.width = 18;
         this.height = 120;
 
-        this.speed = 7;
-        this.velocity = 0;
+
+        this.speed = 8;
+
 
         this.color = color;
 
+
+        this.glow = 0;
+
+
+        this.score = 0;
+
     }
 
 
-    update() {
 
-        this.y += this.velocity;
+    move(direction){
 
 
-        if(this.y < 0) {
+        this.y += direction * this.speed;
+
+
+        this.keepOnScreen();
+
+    }
+
+
+
+    update(){
+
+
+        // Slowly fade hit glow
+
+        if(this.glow > 0){
+
+            this.glow -= 0.05;
+
+        }
+
+
+        this.keepOnScreen();
+
+    }
+
+
+
+    keepOnScreen(){
+
+
+        if(this.y < 0){
+
             this.y = 0;
+
         }
 
 
-        if(this.y + this.height > canvas.height) {
-            this.y = canvas.height - this.height;
+        if(this.y + this.height > canvas.height){
+
+            this.y =
+                canvas.height - this.height;
+
         }
 
     }
 
 
-    draw(ctx) {
+
+    hitEffect(){
+
+
+        this.glow = 1;
+
+
+    }
+
+
+
+
+    draw(ctx){
+
+
+        ctx.save();
+
 
         // Outer glow
-        ctx.shadowBlur = 25;
-        ctx.shadowColor = this.color;
+
+        ctx.shadowBlur =
+            25 + this.glow * 30;
 
 
-        // Main gradient
-        let gradient = ctx.createLinearGradient(
-            this.x,
-            this.y,
-            this.x + this.width,
-            this.y
-        );
+        ctx.shadowColor =
+            this.color;
 
 
-        gradient.addColorStop(0, this.color);
-        gradient.addColorStop(0.5, "white");
-        gradient.addColorStop(1, this.color);
+
+        ctx.fillStyle =
+            this.color;
 
 
-        ctx.fillStyle = gradient;
 
+        // Rounded paddle
 
-        // Main paddle
-        ctx.beginPath();
-
-        ctx.roundRect(
+        this.roundRect(
+            ctx,
             this.x,
             this.y,
             this.width,
             this.height,
-            12
+            10
         );
+
 
         ctx.fill();
 
 
-        // Inner outline
+
+        // Inner highlight
+
         ctx.shadowBlur = 0;
 
-        ctx.strokeStyle = this.color;
-        ctx.lineWidth = 4;
+
+        ctx.fillStyle="white";
+
+
+        this.roundRect(
+
+            ctx,
+
+            this.x + 4,
+
+            this.y + 8,
+
+            this.width - 8,
+
+            this.height - 16,
+
+            6
+
+        );
+
+
+        ctx.globalAlpha = 0.35;
+
+
+        ctx.fill();
+
+
+
+        ctx.restore();
+
+
+    }
+
+
+
+
+    roundRect(ctx,x,y,w,h,r){
+
 
         ctx.beginPath();
 
-        ctx.roundRect(
-            this.x + 3,
-            this.y + 3,
-            this.width - 6,
-            this.height - 6,
-            10
+
+        ctx.moveTo(x+r,y);
+
+
+        ctx.lineTo(x+w-r,y);
+
+
+        ctx.quadraticCurveTo(
+            x+w,
+            y,
+            x+w,
+            y+r
         );
 
-        ctx.stroke();
+
+        ctx.lineTo(x+w,y+h-r);
 
 
-        // Reset canvas settings
-        ctx.shadowBlur = 0;
-        ctx.lineWidth = 1;
+        ctx.quadraticCurveTo(
+            x+w,
+            y+h,
+            x+w-r,
+            y+h
+        );
+
+
+        ctx.lineTo(x+r,y+h);
+
+
+        ctx.quadraticCurveTo(
+            x,
+            y+h,
+            x,
+            y+h-r
+        );
+
+
+        ctx.lineTo(x,y+r);
+
+
+        ctx.quadraticCurveTo(
+            x,
+            y,
+            x+r,
+            y
+        );
+
+
+        ctx.closePath();
+
 
     }
 
