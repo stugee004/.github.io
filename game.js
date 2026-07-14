@@ -33,6 +33,9 @@ function checkCollision(){
         let hit = ball.y - (player.y + player.height / 2);
 
         ball.dy += hit * 0.05;
+
+        if(ball.dy > 8) ball.dy = 8;
+        if(ball.dy < -8) ball.dy = -8;
     }
 
 
@@ -51,6 +54,9 @@ function checkCollision(){
         let hit = ball.y - (cpu.y + cpu.height / 2);
 
         ball.dy += hit * 0.05;
+
+        if(ball.dy > 8) ball.dy = 8;
+        if(ball.dy < -8) ball.dy = -8;
     }
 
 }
