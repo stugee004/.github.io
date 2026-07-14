@@ -12,8 +12,8 @@ class Ball {
         this.x = canvas.width/2;
         this.y = canvas.height/2;
 
-        this.dx = Math.random()>0.5 ? 6 : -6;
-        this.dy = (Math.random()-0.5)*6;
+        this.dx = Math.random()>0.5 ? 9 : -9;
+        this.dy = (Math.random()-0.5)*9;
     }
 
     update(){
