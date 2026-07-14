@@ -1,6 +1,9 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
+stars.update();
+stars.draw(ctx);
+
 const player = new Paddle(20, canvas.height / 2 - 60);
 const cpu = new CPU(canvas.width - 40, canvas.height / 2 - 60, "medium");
 const ball = new Ball();
