@@ -5,6 +5,38 @@ const player = new Paddle(20, canvas.height / 2 - 60);
 const cpu = new CPU(canvas.width - 40, canvas.height / 2 - 60, "medium");
 const ball = new Ball();
 
+function checkCollision(){
+
+    // Player paddle
+    if(
+        ball.x - ball.radius < player.x + player.width &&
+        ball.y > player.y &&
+        ball.y < player.y + player.height
+    ){
+
+        ball.dx *= -1;
+
+        // Add angle based on where it hits
+        let hit = ball.y - (player.y + player.height/2);
+        ball.dy = hit * 0.15;
+    }
+
+
+    // CPU paddle
+    if(
+        ball.x + ball.radius > cpu.x &&
+        ball.y > cpu.y &&
+        ball.y < cpu.y + cpu.height
+    ){
+
+        ball.dx *= -1;
+
+        let hit = ball.y - (cpu.y + cpu.height/2);
+        ball.dy = hit * 0.15;
+    }
+
+}
+
 function gameLoop() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -15,6 +47,7 @@ function gameLoop() {
     cpu.update(ball);
     ball.update();
 
+    checkCollision();
     player.draw(ctx);
     cpu.draw(ctx);
     ball.draw(ctx);
