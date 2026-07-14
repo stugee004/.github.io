@@ -1,7 +1,7 @@
 class CPU extends Paddle {
 
     constructor(x,y,color="red",difficulty) {
-        super(x, y);
+        super(x,y,color);
         this.speed = 7;
         this.speed =
         difficulty==="easy" ? 4 :
