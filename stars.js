@@ -302,11 +302,11 @@ class Starfield {
 
 
 
-        if(typeof playConstellation === "function"){
+        if(typeof sounds !== "undefined"){
 
-            playConstellation();
+    sounds.constellation();
 
-        }
+}
 
 
     }
