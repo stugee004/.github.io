@@ -118,6 +118,7 @@ function scoreCheck(){
 
         gameOver = true;
         winnerText = "PLAYER VICTORY!";
+        playVictory();
 
     }
 
@@ -126,6 +127,7 @@ function scoreCheck(){
 
         gameOver = true;
         winnerText = "CPU VICTORY!";
+        playDefeat();
 
     }
 
