@@ -152,12 +152,12 @@ function gameLoop() {
     cpu.draw(ctx);
     ball.draw(ctx);
 
+    drawScore();
+    
     requestAnimationFrame(gameLoop);
 }
 
 gameLoop();
-
-drawScore();
 
 function controlPlayer() {
 
