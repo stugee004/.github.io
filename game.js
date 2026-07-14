@@ -193,14 +193,15 @@ function gameLoop() {
 
     scoreCheck();
     checkCollision();
+
+     }
+         
     player.draw(ctx);
     cpu.draw(ctx);
     ball.draw(ctx);
 
     drawScore();
     drawWinner();
-
-     }
          
     document.addEventListener("keydown", function(event){
 
