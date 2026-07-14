@@ -18,167 +18,148 @@ class Starfield {
                 speed: Math.random() * 0.01 + 0.003,
 
                 direction: Math.random() > 0.5 ? 1 : -1
+
             });
 
         }
 
-
         this.constellation = null;
         this.constellationTimer = 0;
 
-
-        // 5% chance when game starts
+        // 5% chance when the game starts
         if(Math.random() < 0.05){
             this.spawnConstellation();
         }
 
     }
 
-
     spawnConstellation(){
 
-    const constellations = [
+        const constellations = [
 
-        // Big Dipper
-        [
-            [700,120],[760,100],[820,120],
-            [870,170],[920,210],[860,250],[800,240]
-        ],
+            // Big Dipper
+            [
+                [0,0],[60,-20],[120,0],
+                [170,50],[220,90],[160,130],[100,120]
+            ],
 
+            // Orion
+            [
+                [0,0],[60,50],[120,0],
+                [60,120],[60,200],[0,260],[120,260]
+            ],
 
-        // Orion
-        [
-            [700,100],[760,150],[820,100],
-            [760,220],[760,300],[700,360],
-            [820,360]
-        ],
+            // Cassiopeia
+            [
+                [0,50],[60,0],[120,60],
+                [180,0],[240,50]
+            ],
 
+            // Leo
+            [
+                [20,20],[80,70],[150,60],
+                [200,120],[120,160],[60,130]
+            ],
 
-        // Cassiopeia (W shape)
-        [
-            [700,150],[760,100],[820,160],
-            [880,100],[940,150]
-        ],
+            // Scorpius
+            [
+                [20,0],[50,50],[70,120],
+                [120,160],[190,180],[220,240]
+            ],
 
+            // Crux
+            [
+                [100,0],[100,120],
+                [30,60],[170,60]
+            ],
 
-        // Leo
-        [
-            [720,120],[780,170],[850,160],
-            [900,220],[820,260],[760,230]
-        ],
+            // Pegasus
+            [
+                [0,0],[120,0],[150,100],[30,120]
+            ],
 
+            // Ursa Minor
+            [
+                [0,0],[40,30],[80,70],
+                [120,110],[160,140]
+            ],
 
-        // Scorpius
-        [
-            [750,100],[780,150],[800,220],
-            [850,260],[920,280],[950,340]
-        ],
+            // Aquarius
+            [
+                [0,20],[60,70],[120,30],
+                [180,90],[130,160]
+            ],
 
+            // Ursa Major
+            [
+                [0,80],[60,50],[130,70],
+                [200,30],[250,80]
+            ]
 
-        // Crux Southern Cross
-        [
-            [800,100],[800,220],
-            [730,160],[870,160]
-        ],
-
-
-        // Pegasus
-        [
-            [700,120],[820,120],
-            [850,220],[730,240],
-            [700,120]
-        ],
-
-
-        // Ursa Minor
-        [
-            [760,100],[800,130],
-            [840,170],[880,210],
-            [920,240]
-        ],
-
-
-        // Aquarius
-        [
-            [720,130],[780,180],
-            [840,140],[900,200],
-            [850,270]
-        ],
-
-
-        // Ursa Major simplified
-        [
-            [700,200],[760,170],
-            [830,190],[900,150],
-            [950,200]
-        ]
-
-    ];
-
-
-    this.constellation =
-        constellations[
-            Math.floor(Math.random()*constellations.length)
         ];
 
+        const pattern = constellations[
+            Math.floor(Math.random() * constellations.length)
+        ];
 
-    this.constellationTimer = 900;
+        // Random location on the screen
+        const offsetX = Math.random() * (canvas.width - 300) + 25;
+        const offsetY = Math.random() * (canvas.height - 300) + 25;
 
-}
+        this.constellation = pattern.map(star => ({
+            x: star[0] + offsetX,
+            y: star[1] + offsetY
+        }));
+
+        this.constellationTimer = 900;
+
+        // Optional sound
+        if(typeof playConstellation === "function"){
+            playConstellation();
+        }
+
+    }
 
     update(){
 
-        this.stars.forEach(star => {
+        this.stars.forEach(star=>{
 
             star.brightness += star.speed * star.direction;
 
-
             if(star.brightness >= 1){
-
                 star.brightness = 1;
                 star.direction = -1;
-
             }
 
-
             if(star.brightness <= 0.2){
-
                 star.brightness = 0.2;
                 star.direction = 1;
-
             }
 
         });
-
 
         if(this.constellation){
 
             this.constellationTimer--;
 
             if(this.constellationTimer <= 0){
-
                 this.constellation = null;
-
             }
 
         }
 
-
-        // Small chance for a new constellation
+        // Small chance each frame
         if(!this.constellation && Math.random() < 0.0005){
-
             this.spawnConstellation();
-
         }
 
     }
 
-
     draw(ctx){
 
-        ctx.fillStyle="white";
+        ctx.fillStyle = "white";
 
-
+        // Normal stars
         this.stars.forEach(star=>{
 
             ctx.globalAlpha = star.brightness;
@@ -190,45 +171,37 @@ class Starfield {
                 star.y,
                 star.size,
                 0,
-                Math.PI*2
+                Math.PI * 2
             );
 
             ctx.fill();
 
         });
 
-
         // Draw constellation
         if(this.constellation){
 
-            ctx.globalAlpha = 0.5;
+            ctx.globalAlpha = 0.45;
 
-            ctx.strokeStyle="white";
-            ctx.lineWidth=1;
-
+            ctx.strokeStyle = "white";
+            ctx.lineWidth = 1.5;
 
             ctx.beginPath();
 
             this.constellation.forEach((star,index)=>{
 
-                if(index===0){
-
-                    ctx.moveTo(star.x,star.y);
-
-                } else {
-
-                    ctx.lineTo(star.x,star.y);
-
+                if(index === 0){
+                    ctx.moveTo(star.x, star.y);
+                }else{
+                    ctx.lineTo(star.x, star.y);
                 }
 
             });
 
-
             ctx.stroke();
 
-
-            // constellation stars
-            ctx.globalAlpha=1;
+            // Bright stars
+            ctx.globalAlpha = 1;
 
             this.constellation.forEach(star=>{
 
@@ -239,7 +212,7 @@ class Starfield {
                     star.y,
                     4,
                     0,
-                    Math.PI*2
+                    Math.PI * 2
                 );
 
                 ctx.fill();
@@ -248,8 +221,7 @@ class Starfield {
 
         }
 
-
-        ctx.globalAlpha=1;
+        ctx.globalAlpha = 1;
 
     }
 
