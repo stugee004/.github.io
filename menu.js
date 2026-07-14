@@ -227,8 +227,9 @@ class MenuManager {
             "difficultyButton"
         )
         .innerText =
-            "Difficulty: " +
-            next;
+            "Difficulty: " + 
+next.charAt(0).toUpperCase() +
+next.slice(1)
 
 
     }
