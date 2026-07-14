@@ -25,14 +25,20 @@ window.addEventListener("keyup", function(event) {
     keys[event.key] = false;
 });
 
-    function resetBall(){
+function resetBall(){
 
     ball.x = canvas.width / 2;
     ball.y = canvas.height / 2;
 
-    ball.dx = Math.random() > .5 ? 6 : -6;
+    ball.dx = 0;
+    ball.dy = 0;
 
-    ball.dy = (Math.random()-0.5)*6;
+    setTimeout(()=>{
+
+        ball.dx = Math.random() > .5 ? 6 : -6;
+        ball.dy = (Math.random()-0.5)*6;
+
+    },1000);
 
 }
 
