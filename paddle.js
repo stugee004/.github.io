@@ -31,16 +31,45 @@ class Paddle {
     }
 
 
-    draw(ctx) {
+draw(ctx){
 
-        ctx.fillStyle = "white";
-        ctx.fillRect(
-            this.x,
-            this.y,
-            this.width,
-            this.height
-        );
+    // Glow
+    ctx.shadowBlur = 20;
+    ctx.shadowColor = this.color;
 
-    }
+
+    // Gradient paddle
+    let gradient = ctx.createLinearGradient(
+        this.x,
+        this.y,
+        this.x + this.width,
+        this.y
+    );
+
+
+    gradient.addColorStop(0, this.color);
+    gradient.addColorStop(0.5, "white");
+    gradient.addColorStop(1, this.color);
+
+
+    ctx.fillStyle = gradient;
+
+
+    // Rounded paddle
+    ctx.beginPath();
+
+    ctx.roundRect(
+        this.x,
+        this.y,
+        this.width,
+        this.height,
+        15
+    );
+
+    ctx.fill();
+
+
+    // Reset glow
+    ctx.shadowBlur = 0;
 
 }
