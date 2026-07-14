@@ -184,6 +184,8 @@ function gameLoop() {
     stars.draw(ctx);
     
     controlPlayer();
+
+     if(!gameOver){
     
     player.update();
     cpu.update(ball);
@@ -198,6 +200,8 @@ function gameLoop() {
     drawScore();
     drawWinner();
 
+     }
+         
     document.addEventListener("keydown", function(event){
 
     if(event.key === "r" && gameOver){
