@@ -142,6 +142,7 @@ function checkCollision(){
 
         // Reverse horizontal direction
         ball.dx *= -1;
+        playHit();
 
         // Add spin without flipping vertical direction
         let hit = ball.y - (player.y + player.height / 2);
@@ -163,6 +164,7 @@ function checkCollision(){
 
         // Reverse horizontal direction
         ball.dx *= -1;
+        playHit();
 
         // Add spin without flipping vertical direction
         let hit = ball.y - (cpu.y + cpu.height / 2);
