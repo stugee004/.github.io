@@ -1,123 +1,460 @@
-const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+class SoundManager {
 
-document.addEventListener("click", () => {
-    if (audioContext.state === "suspended") {
-        audioContext.resume();
+
+    constructor(){
+
+        this.audio =
+            new (window.AudioContext ||
+            window.webkitAudioContext)();
+
+
+        this.volume = 0.3;
+
+
     }
-}, { once: true });
 
-function tone(type, frequency, duration, volume = 0.15) {
 
-    const osc = audioContext.createOscillator();
-    const gain = audioContext.createGain();
 
-    osc.type = type;
-    osc.frequency.value = frequency;
 
-    gain.gain.value = volume;
+    unlock(){
 
-    osc.connect(gain);
-    gain.connect(audioContext.destination);
+        if(this.audio.state === "suspended"){
 
-    osc.start();
+            this.audio.resume();
 
-    gain.gain.exponentialRampToValueAtTime(
-        0.0001,
-        audioContext.currentTime + duration
-    );
+        }
 
-    osc.stop(audioContext.currentTime + duration);
+    }
+
+
+
+
+
+    playTone(
+        frequency,
+        duration,
+        type="sine",
+        volume=this.volume
+    ){
+
+
+        this.unlock();
+
+
+        const oscillator =
+            this.audio.createOscillator();
+
+
+        const gain =
+            this.audio.createGain();
+
+
+
+        oscillator.type = type;
+
+
+        oscillator.frequency.value =
+            frequency;
+
+
+
+        gain.gain.value = volume;
+
+
+
+        oscillator.connect(gain);
+
+
+        gain.connect(
+            this.audio.destination
+        );
+
+
+
+        oscillator.start();
+
+
+
+        gain.gain.exponentialRampToValueAtTime(
+
+            0.001,
+
+            this.audio.currentTime + duration
+
+        );
+
+
+
+        oscillator.stop(
+
+            this.audio.currentTime + duration
+
+        );
+
+
+    }
+
+
+
+
+
+
+    hit(){
+
+
+        this.playTone(
+
+            240,
+
+            0.08,
+
+            "square"
+
+        );
+
+
+        setTimeout(()=>{
+
+            this.playTone(
+                400,
+                0.05,
+                "square"
+            );
+
+        },40);
+
+
+    }
+
+
+
+
+
+    wall(){
+
+
+        this.playTone(
+
+            120,
+
+            0.1,
+
+            "triangle"
+
+        );
+
+
+    }
+
+
+
+
+
+
+    score(){
+
+
+        this.playTone(
+
+            500,
+
+            0.15,
+
+            "sine"
+
+        );
+
+
+        setTimeout(()=>{
+
+
+            this.playTone(
+
+                750,
+
+                0.2,
+
+                "sine"
+
+            );
+
+
+        },100);
+
+
+    }
+
+
+
+
+
+
+
+    coin(){
+
+
+        this.playTone(
+
+            800,
+
+            0.08,
+
+            "square"
+
+        );
+
+
+        setTimeout(()=>{
+
+
+            this.playTone(
+
+                1200,
+
+                0.15,
+
+                "square"
+
+            );
+
+
+        },80);
+
+
+    }
+
+
+
+
+
+
+
+    constellation(){
+
+
+        const notes = [
+
+            523,
+            659,
+            784,
+            1046
+
+        ];
+
+
+
+        notes.forEach((note,index)=>{
+
+
+            setTimeout(()=>{
+
+
+                this.playTone(
+
+                    note,
+
+                    0.25,
+
+                    "sine"
+
+                );
+
+
+            },index*120);
+
+
+        });
+
+
+    }
+
+
+
+
+
+
+
+
+    ability(){
+
+
+        const notes=[
+
+            300,
+            450,
+            700
+
+        ];
+
+
+
+        notes.forEach((n,i)=>{
+
+
+            setTimeout(()=>{
+
+
+                this.playTone(
+
+                    n,
+
+                    0.12,
+
+                    "sawtooth"
+
+                );
+
+
+            },i*70);
+
+
+        });
+
+
+    }
+
+
+
+
+
+
+
+    victory(){
+
+
+        const melody=[
+
+            523,
+            659,
+            784,
+            1046,
+            1318
+
+        ];
+
+
+
+        melody.forEach((n,i)=>{
+
+
+            setTimeout(()=>{
+
+
+                this.playTone(
+
+                    n,
+
+                    0.3,
+
+                    "triangle",
+
+                    0.4
+
+                );
+
+
+            },i*180);
+
+
+        });
+
+
+    }
+
+
+
+
+
+
+
+    explosion(){
+
+
+        this.playTone(
+
+            80,
+
+            0.3,
+
+            "sawtooth",
+
+            0.5
+
+        );
+
+
+    }
+
+
 
 }
 
-// Paddle hit
+
+
+// Global sound object
+
+
+const sounds = new SoundManager();
+
+
+
+
+
+// Compatibility functions
+// These match the other files
+
+
 function playHit(){
-    tone("square", 550, 0.06);
+
+    sounds.hit();
+
 }
 
-// Wall hit
+
 function playWall(){
-    tone("triangle", 300, 0.05);
+
+    sounds.wall();
+
 }
 
-// Score
+
 function playScore(){
 
-    tone("triangle", 350, 0.08);
-
-    setTimeout(()=>{
-        tone("triangle",550,0.12);
-    },90);
+    sounds.score();
 
 }
 
-// Ability unlocked
-function playAbility(){
 
-    tone("sine",500,0.08);
-
-    setTimeout(()=>{
-        tone("sine",700,0.08);
-    },80);
-
-    setTimeout(()=>{
-        tone("sine",900,0.15);
-    },160);
-
-}
-
-// Coin / Cenes
 function playCoin(){
 
-    tone("triangle",900,0.05);
-
-    setTimeout(()=>{
-        tone("triangle",1300,0.08);
-    },40);
+    sounds.coin();
 
 }
 
-// Victory
-function playVictory(){
 
-    const notes = [523,659,784,1047];
-
-    notes.forEach((note,index)=>{
-
-        setTimeout(()=>{
-            tone("triangle",note,0.25);
-        },index*170);
-
-    });
-
-}
-
-// Defeat
-function playDefeat(){
-
-    const notes = [400,320,260];
-
-    notes.forEach((note,index)=>{
-
-        setTimeout(()=>{
-            tone("sawtooth",note,0.25);
-        },index*170);
-
-    });
-
-}
-
-// Constellation discovered
 function playConstellation(){
 
-    const notes=[900,1200,1500];
+    sounds.constellation();
 
-    notes.forEach((note,index)=>{
+}
 
-        setTimeout(()=>{
-            tone("sine",note,0.12,0.08);
-        },index*80);
 
-    });
+function playAbility(){
+
+    sounds.ability();
+
+}
+
+
+function playVictory(){
+
+    sounds.victory();
+
+}
+
+
+function playExplosion(){
+
+    sounds.explosion();
 
 }
