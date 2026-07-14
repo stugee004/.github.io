@@ -1,12 +1,9 @@
 // =====================================
-// Hyper Pong Main Game Controller
+// Hyper Pong Game Controller
 // =====================================
 
 
-// Canvas
-
 const canvas = document.getElementById("gameCanvas");
-
 const ctx = canvas.getContext("2d");
 
 
@@ -14,7 +11,6 @@ const ctx = canvas.getContext("2d");
 function resizeCanvas(){
 
     canvas.width = window.innerWidth;
-
     canvas.height = window.innerHeight;
 
 }
@@ -43,22 +39,19 @@ let gameOver = false;
 let winner = "";
 
 
-
-let player;
-
-let cpu;
-
-let ball;
-
-let stars;
-
-let particles;
-
-
-
 let playerScore = 0;
 
 let cpuScore = 0;
+
+
+
+let player;
+let cpu;
+let ball;
+
+let stars;
+let particles;
+
 
 
 
@@ -79,6 +72,7 @@ window.addEventListener(
         keys[e.key] = true;
 
 
+
         if(
             e.key === "r" ||
             e.key === "R"
@@ -90,7 +84,9 @@ window.addEventListener(
 
 
 
-        if(typeof sounds !== "undefined"){
+        if(
+            typeof sounds !== "undefined"
+        ){
 
             sounds.unlock();
 
@@ -114,39 +110,30 @@ window.addEventListener(
 
 
 
+
 // =====================================
-// Create Game
+// Create Objects
 // =====================================
 
 
-function createGame(){
+function createGameObjects(){
 
 
 
     player =
         new Paddle(
-
             40,
-
-            canvas.height / 2 - 60,
-
+            canvas.height/2-60,
             "cyan"
-
         );
 
 
 
     cpu =
         new CPU(
-
-            canvas.width - 60,
-
-            canvas.height / 2 - 60,
-
-            save.get(
-                "settings.difficulty"
-            ) || "medium"
-
+            canvas.width-60,
+            canvas.height/2-60,
+            save.get("settings.difficulty") || "medium"
         );
 
 
@@ -156,22 +143,32 @@ function createGame(){
 
 
 
-    stars =
-        new Starfield(120);
+
+    // Only create background once
+
+    if(!stars){
+
+        stars = new Starfield(120);
+
+    }
 
 
 
-    particles =
-        new ParticleSystem();
+    if(!particles){
 
+        particles =
+            new ParticleSystem();
+
+    }
 
 
 }
 
 
 
+createGameObjects();
 
-createGame();
+
 
 
 
@@ -186,17 +183,12 @@ function startGame(){
 
     gameStarted = true;
 
-
-    gameOver = false;
-
-
-    winner = "";
-
-
     resetGame();
 
 
 }
+
+
 
 
 
@@ -210,11 +202,13 @@ function startGame(){
 function update(){
 
 
+
     if(!gameStarted){
 
         return;
 
     }
+
 
 
 
@@ -235,6 +229,7 @@ function update(){
 
 
 
+
     // Player movement
 
 
@@ -243,7 +238,6 @@ function update(){
         player.move(-1);
 
     }
-
 
 
     if(keys["ArrowDown"]){
@@ -260,18 +254,8 @@ function update(){
 
 
 
-    if(typeof abilities !== "undefined"){
-
-        abilities.applyPlayerEffects(
-            player
-        );
-
-    }
-
-
-
-
     cpu.update(ball);
+
 
 
 
@@ -280,11 +264,15 @@ function update(){
 
 
 
-    if(typeof abilities !== "undefined"){
 
-        abilities.applyBallEffects(
-            ball
-        );
+
+    if(
+        typeof abilities !== "undefined"
+    ){
+
+        abilities.applyPlayerEffects(player);
+
+        abilities.applyBallEffects(ball);
 
         abilities.update();
 
@@ -293,20 +281,20 @@ function update(){
 
 
 
-    ball.checkPaddleCollision(
-        player
-    );
 
 
-    ball.checkPaddleCollision(
-        cpu
-    );
+    ball.checkPaddleCollision(player);
+
+    ball.checkPaddleCollision(cpu);
 
 
 
 
 
-    // Scoring
+
+
+
+    // Player scores
 
 
     if(ball.x < 0){
@@ -315,18 +303,12 @@ function update(){
         cpuScore++;
 
 
-        if(typeof economy !== "undefined"){
+        if(typeof sounds !== "undefined"){
 
-            economy.scoreReward();
-
-        }
-
-
-        if(typeof playScore === "function"){
-
-            playScore();
+            sounds.score();
 
         }
+
 
 
         resetRound();
@@ -339,24 +321,21 @@ function update(){
 
 
 
+    // CPU scores
+
+
     if(ball.x > canvas.width){
 
 
         playerScore++;
 
 
-        if(typeof economy !== "undefined"){
+        if(typeof sounds !== "undefined"){
 
-            economy.scoreReward();
-
-        }
-
-
-        if(typeof playScore === "function"){
-
-            playScore();
+            sounds.score();
 
         }
+
 
 
         resetRound();
@@ -373,8 +352,11 @@ function update(){
 
 
 
-    stars.update();
+    if(stars){
 
+        stars.update();
+
+    }
 
 
     if(particles){
@@ -384,7 +366,10 @@ function update(){
     }
 
 
+
 }
+
+
 
 
 
@@ -399,20 +384,17 @@ function draw(){
 
 
 
-    ctx.fillStyle="black";
+    ctx.fillStyle = "black";
 
 
     ctx.fillRect(
-
         0,
-
         0,
-
         canvas.width,
-
         canvas.height
-
     );
+
+
 
 
 
@@ -424,49 +406,40 @@ function draw(){
 
 
 
-    // Center line
 
 
-    ctx.globalAlpha=.3;
+
+    // Middle line
 
 
     ctx.strokeStyle="white";
 
+    ctx.globalAlpha=.3;
 
-    ctx.setLineDash(
-        [10,10]
-    );
+    ctx.setLineDash([10,10]);
 
 
     ctx.beginPath();
 
-
     ctx.moveTo(
-
         canvas.width/2,
-
         0
-
     );
 
 
     ctx.lineTo(
-
         canvas.width/2,
-
         canvas.height
-
     );
 
 
     ctx.stroke();
 
 
-
     ctx.setLineDash([]);
 
-
     ctx.globalAlpha=1;
+
 
 
 
@@ -504,7 +477,9 @@ function draw(){
 
 
 
+
     drawScore();
+
 
 
 
@@ -515,14 +490,17 @@ function draw(){
     }
 
 
+
 }
 
 
 
 
 
+
+
 // =====================================
-// Score
+// Score Display
 // =====================================
 
 
@@ -534,41 +512,34 @@ function drawScore(){
 
     ctx.fillStyle="white";
 
-
     ctx.font="50px Arial";
-
 
     ctx.textAlign="center";
 
 
 
     ctx.fillText(
-
         playerScore,
-
         canvas.width/2-80,
-
         70
-
     );
-
 
 
     ctx.fillText(
-
         cpuScore,
-
         canvas.width/2+80,
-
         70
-
     );
+
 
 
     ctx.restore();
 
 
 }
+
+
+
 
 
 
@@ -581,13 +552,12 @@ function drawScore(){
 function checkVictory(){
 
 
-    if(playerScore >= 5){
 
+    if(playerScore >= 5){
 
         endGame(
             "PLAYER VICTORY"
         );
-
 
     }
 
@@ -595,11 +565,9 @@ function checkVictory(){
 
     if(cpuScore >= 5){
 
-
         endGame(
             "CPU VICTORY"
         );
-
 
     }
 
@@ -610,13 +578,14 @@ function checkVictory(){
 
 
 
+
 function endGame(text){
 
 
-    gameOver = true;
+    gameOver=true;
 
 
-    winner = text;
+    winner=text;
 
 
 
@@ -631,9 +600,9 @@ function endGame(text){
 
 
 
-    if(typeof playVictory === "function"){
+    if(typeof sounds !== "undefined"){
 
-        playVictory();
+        sounds.victory();
 
     }
 
@@ -649,24 +618,16 @@ function endGame(text){
 function drawVictory(){
 
 
-    ctx.save();
 
-
-
-    ctx.fillStyle =
+    ctx.fillStyle=
         "rgba(0,0,0,.6)";
 
 
     ctx.fillRect(
-
         0,
-
         0,
-
         canvas.width,
-
         canvas.height
-
     );
 
 
@@ -674,20 +635,16 @@ function drawVictory(){
     ctx.fillStyle="white";
 
 
+    ctx.font="70px Arial";
+
     ctx.textAlign="center";
 
 
-    ctx.font="70px Arial";
-
 
     ctx.fillText(
-
         winner,
-
         canvas.width/2,
-
         canvas.height/2
-
     );
 
 
@@ -696,21 +653,16 @@ function drawVictory(){
 
 
     ctx.fillText(
-
         "Press R to restart",
-
         canvas.width/2,
-
         canvas.height/2+60
-
     );
 
 
-
-    ctx.restore();
-
-
 }
+
+
+
 
 
 
@@ -726,9 +678,7 @@ function resetRound(){
     ball.reset();
 
 
-
 }
-
 
 
 
@@ -739,59 +689,47 @@ function resetGame(){
 
     playerScore=0;
 
-
     cpuScore=0;
 
 
     gameOver=false;
 
-
     winner="";
 
 
 
-    createGame();
+    player =
+        new Paddle(
+            40,
+            canvas.height/2-60,
+            "cyan"
+        );
+
+
+
+    cpu =
+        new CPU(
+            canvas.width-60,
+            canvas.height/2-60,
+            save.get("settings.difficulty") || "medium"
+        );
+
+
+
+    ball =
+        new Ball();
 
 
 }
 
-// =====================================
-// Full Game Reset
-// =====================================
-
-function resetGame(){
 
 
-    playerScore = 0;
-
-    cpuScore = 0;
-
-    gameOver = false;
-
-    winner = "";
 
 
-    player = new Paddle(
-        40,
-        canvas.height / 2 - 60,
-        "cyan"
-    );
 
-
-    cpu = new CPU(
-        canvas.width - 60,
-        canvas.height / 2 - 60,
-        save.get("settings.difficulty") || "medium"
-    );
-
-
-    ball = new Ball();
-
-
-}
 
 // =====================================
-// Main Loop
+// Loop
 // =====================================
 
 
@@ -799,7 +737,6 @@ function gameLoop(){
 
 
     update();
-
 
     draw();
 
