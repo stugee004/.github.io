@@ -23,6 +23,7 @@ class Ball {
 
         if(this.y<0 || this.y>canvas.height)
             this.dy *= -1;
+            playHit();
     }
 
     draw(ctx){
