@@ -71,7 +71,21 @@ function scoreCheck(){
     if(ball.x < 0){
 
         cpuScore++;
+        ctx.fillStyle = "red";
+    ctx.font = "40px Arial";
+    ctx.textAlign = "center";
 
+    ctx.fillText(
+        playerScore,
+        canvas.width / 4,
+        50
+    );
+
+    ctx.fillText(
+        cpuScore,
+        canvas.width * 3 / 4,
+        50
+    );
         resetBall();
 
     }
@@ -80,7 +94,21 @@ function scoreCheck(){
     if(ball.x > canvas.width){
 
         playerScore++;
+        ctx.fillStyle = "cyan";
+    ctx.font = "40px Arial";
+    ctx.textAlign = "center";
 
+    ctx.fillText(
+        playerScore,
+        canvas.width / 4,
+        50
+    );
+
+    ctx.fillText(
+        cpuScore,
+        canvas.width * 3 / 4,
+        50
+    );
         resetBall();
 
     }
