@@ -164,7 +164,7 @@ class MenuManager {
 
         if(typeof resetGame === "function"){
 
-            resetGame();
+            startGame();
 
         }
 
