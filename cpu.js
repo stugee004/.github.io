@@ -1,70 +1,254 @@
 class CPU extends Paddle {
 
-constructor(x,y,color="red",difficulty="medium"){
 
-    super(x,y,color);
-
-    this.difficulty = difficulty;
+    constructor(x, y, difficulty = "medium") {
 
 
-    if(difficulty==="easy"){
-        this.speed = 3;
-        this.error = 250;
+        super(x, y, "red");
+
+
+        this.difficulty = difficulty;
+
+
+        this.speed = 6;
+
+
+        this.reactionDelay = 0;
+
+
+        this.targetY = y;
+
+
+        this.errorAmount = 40;
+
+
+
+        this.setDifficulty();
+
+
     }
 
-    if(difficulty==="medium"){
-        this.speed = 5;
-        this.error = 120;
+
+
+    setDifficulty(){
+
+
+        if(this.difficulty === "easy"){
+
+            this.speed = 4;
+
+            this.reactionDelay = 30;
+
+            this.errorAmount = 100;
+
+        }
+
+
+        if(this.difficulty === "medium"){
+
+            this.speed = 6;
+
+            this.reactionDelay = 15;
+
+            this.errorAmount = 50;
+
+        }
+
+
+        if(this.difficulty === "hard"){
+
+            this.speed = 8;
+
+            this.reactionDelay = 5;
+
+            this.errorAmount = 20;
+
+        }
+
+
+        if(this.difficulty === "impossible"){
+
+            this.speed = 10;
+
+            this.reactionDelay = 0;
+
+            this.errorAmount = 5;
+
+        }
+
     }
 
-    if(difficulty==="hard"){
-        this.speed = 7;
-        this.error = 40;
+
+
+
+    update(ball){
+
+
+        super.update();
+
+
+
+        this.reactionDelay--;
+
+
+
+        // Only think after reaction delay
+
+        if(this.reactionDelay <= 0){
+
+
+            this.calculateTarget(ball);
+
+
+            this.reactionDelay = 
+                this.difficulty === "easy" ? 30 :
+                this.difficulty === "medium" ? 15 :
+                5;
+
+
+        }
+
+
+
+
+        // Move toward target
+
+
+        const center =
+            this.y + this.height / 2;
+
+
+
+        if(center < this.targetY - 10){
+
+            this.y += this.speed;
+
+        }
+
+
+        else if(center > this.targetY + 10){
+
+            this.y -= this.speed;
+
+        }
+
+
+
+        this.keepOnScreen();
+
+
     }
 
-}
 
-    update(ball) {
 
-        // Return to center if the ball is moving away
-        if (ball.dx < 0) {
 
-            const target = canvas.height / 2;
 
-            if (this.y + this.height / 2 < target) {
-                this.y += this.speed;
-            } else {
-                this.y -= this.speed;
+    calculateTarget(ball){
+
+
+
+        // If ball is moving away, return center
+
+        if(ball.dx < 0){
+
+
+            this.targetY =
+                canvas.height / 2;
+
+
+            return;
+
+        }
+
+
+
+        // Predict ball position
+
+
+        let time =
+            (this.x - ball.x) /
+            ball.dx;
+
+
+
+        let predictedY =
+            ball.y +
+            ball.dy * time;
+
+
+
+        // Bounce prediction
+
+        while(
+            predictedY < 0 ||
+            predictedY > canvas.height
+        ){
+
+            if(predictedY < 0){
+
+                predictedY =
+                    -predictedY;
+
             }
 
-        } else {
 
-            // Predict where the ball will arrive
-            let predictedY = ball.y +
-                (this.x - ball.x) * (ball.dy / ball.dx);
+            if(predictedY > canvas.height){
 
-            // Add some inaccuracy
-            predictedY += (Math.random()-0.5)*this.error;
+                predictedY =
+                    canvas.height -
+                    (predictedY - canvas.height);
 
-            if (this.y + this.height / 2 < predictedY) {
-                this.y += this.speed;
-            }
-
-            if (this.y + this.height / 2 > predictedY) {
-                this.y -= this.speed;
             }
 
         }
 
-        // Keep paddle on screen
-        if (this.y < 0) {
-            this.y = 0;
-        }
 
-        if (this.y + this.height > canvas.height) {
-            this.y = canvas.height - this.height;
-        }
+
+        // Add human error
+
+        predictedY +=
+            (Math.random() - 0.5)
+            *
+            this.errorAmount;
+
+
+
+        this.targetY = predictedY;
+
 
     }
+
+
+
+
+    draw(ctx){
+
+
+        super.draw(ctx);
+
+
+        // CPU label
+
+        ctx.save();
+
+
+        ctx.fillStyle="red";
+
+
+        ctx.font="14px Arial";
+
+
+        ctx.fillText(
+            "CPU",
+            this.x - 5,
+            this.y - 10
+        );
+
+
+        ctx.restore();
+
+
+    }
+
 
 }
