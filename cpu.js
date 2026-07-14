@@ -1,14 +1,28 @@
 class CPU extends Paddle {
 
-    constructor(x,y,color="red",difficulty) {
-        super(x,y,color);
-        this.speed = 7;
-        this.speed =
-        difficulty==="easy" ? 4 :
-        difficulty==="medium" ? 6 :
-        difficulty==="hard" ? 9 :
-        12;
+constructor(x,y,color="red",difficulty="medium"){
+
+    super(x,y,color);
+
+    this.difficulty = difficulty;
+
+
+    if(difficulty==="easy"){
+        this.speed = 3;
+        this.error = 250;
     }
+
+    if(difficulty==="medium"){
+        this.speed = 5;
+        this.error = 120;
+    }
+
+    if(difficulty==="hard"){
+        this.speed = 7;
+        this.error = 40;
+    }
+
+}
 
     update(ball) {
 
@@ -30,7 +44,7 @@ class CPU extends Paddle {
                 (this.x - ball.x) * (ball.dy / ball.dx);
 
             // Add some inaccuracy
-            predictedY += (Math.random() - 0.5) * 50;
+            predictedY += (Math.random()-0.5)*this.error;
 
             if (this.y + this.height / 2 < predictedY) {
                 this.y += this.speed;
