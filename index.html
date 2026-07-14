@@ -1,62 +1,97 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
 
 <head>
 
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 
     <title>Hyper Pong</title>
 
+
     <link rel="stylesheet" href="style.css">
+
 
 </head>
 
+
+
 <body>
 
-<div id="gameContainer">
+
+    <!-- Main Game Canvas -->
 
     <canvas id="gameCanvas"></canvas>
 
-    <div id="ui">
-
-        <div id="topBar">
-
-            <div id="playerScore">0</div>
-
-            <div id="cenesDisplay">
-                ⭐ <span id="cenes">0</span> Cenes
-            </div>
-
-            <div id="cpuScore">0</div>
-
-        </div>
 
 
-        <div id="notification"></div>
+    <!-- Menu and UI are created by JavaScript -->
 
 
-        <div id="victoryScreen" class="hidden">
+    <!-- Core Systems -->
 
-            <h1 id="winnerText"></h1>
-
-            <p>Press R to Play Again</p>
-
-        </div>
-
-    </div>
-
-</div>
+    <script src="sound.js"></script>
 
 
-<script src="particles.js"></script>
-<script src="sound.js"></script>
-<script src="stars.js"></script>
-<script src="paddle.js"></script>
-<script src="ball.js"></script>
-<script src="cpu.js"></script>
-<script src="game.js"></script>
+    <script src="particles.js"></script>
+
+
+    <script src="stars.js"></script>
+
+
+
+
+    <!-- Saving and Progression -->
+
+
+    <script src="save.js"></script>
+
+
+    <script src="economy.js"></script>
+
+
+    <script src="abilities.js"></script>
+
+
+    <script src="shop.js"></script>
+
+
+
+
+    <!-- Game Objects -->
+
+
+    <script src="paddle.js"></script>
+
+
+    <script src="ball.js"></script>
+
+
+    <script src="cpu.js"></script>
+
+
+
+
+    <!-- Interface -->
+
+
+    <script src="menu.js"></script>
+
+
+
+
+    <!-- Main Engine -->
+
+
+    <script src="game.js"></script>
+
+
 
 </body>
+
 
 </html>
