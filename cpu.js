@@ -42,5 +42,4 @@ class CPU extends Paddle {
             this.y = canvas.height - this.height;
     }
 }
-
 }
