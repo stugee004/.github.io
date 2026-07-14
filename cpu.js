@@ -1,3 +1,11 @@
+class CPU extends Paddle {
+
+    constructor(x, y) {
+        super(x, y);
+
+        this.speed = 7;
+    }
+
 update(ball){
 
     // If the ball is moving away, return to center
