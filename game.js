@@ -29,6 +29,26 @@ window.addEventListener("keyup", function(event) {
     keys[event.key] = false;
 });
 
+function drawScore(){
+
+    ctx.fillStyle = "white";
+    ctx.font = "40px Arial";
+    ctx.textAlign = "center";
+
+    ctx.fillText(
+        playerScore,
+        canvas.width / 4,
+        50
+    );
+
+    ctx.fillText(
+        cpuScore,
+        canvas.width * 3 / 4,
+        50
+    );
+
+}
+
 function resetBall(){
 
     ball.x = canvas.width / 2;
@@ -137,20 +157,7 @@ function gameLoop() {
 
 gameLoop();
 
-ctx.fillStyle="white";
-ctx.font="40px Arial";
-
-ctx.fillText(
-    playerScore,
-    canvas.width/4,
-    50
-);
-
-ctx.fillText(
-    cpuScore,
-    canvas.width*3/4,
-    50
-);
+drawScore();
 
 function controlPlayer() {
 
