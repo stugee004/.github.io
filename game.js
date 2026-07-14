@@ -755,10 +755,40 @@ function resetGame(){
 
 }
 
+// =====================================
+// Full Game Reset
+// =====================================
+
+function resetGame(){
 
 
+    playerScore = 0;
+
+    cpuScore = 0;
+
+    gameOver = false;
+
+    winner = "";
 
 
+    player = new Paddle(
+        40,
+        canvas.height / 2 - 60,
+        "cyan"
+    );
+
+
+    cpu = new CPU(
+        canvas.width - 60,
+        canvas.height / 2 - 60,
+        save.get("settings.difficulty") || "medium"
+    );
+
+
+    ball = new Ball();
+
+
+}
 
 // =====================================
 // Main Loop
