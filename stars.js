@@ -28,7 +28,7 @@ class Starfield {
 
 
         // 5% chance when game starts
-        if(Math.random() < 0.05){
+        if(Math.random() < 1){
             this.spawnConstellation();
         }
 
