@@ -17,6 +17,9 @@ const ball = new Ball();
 let playerScore = 0;
 let cpuScore = 0;
 
+let gameOver = false;
+let winnerText = "";
+
 let cenes = 0;
 
 let keys = {};
@@ -28,6 +31,32 @@ window.addEventListener("keydown", function(event) {
 window.addEventListener("keyup", function(event) {
     keys[event.key] = false;
 });
+
+function drawWinner(){
+
+    if(gameOver){
+
+        ctx.fillStyle = "white";
+        ctx.font = "50px Arial";
+        ctx.textAlign = "center";
+
+        ctx.fillText(
+            winnerText,
+            canvas.width / 2,
+            canvas.height / 2
+        );
+
+        ctx.font = "25px Arial";
+
+        ctx.fillText(
+            "Press R to restart",
+            canvas.width / 2,
+            canvas.height / 2 + 60
+        );
+
+    }
+
+}
 
 function drawScore(){
 
@@ -71,21 +100,6 @@ function scoreCheck(){
     if(ball.x < 0){
 
         cpuScore++;
-        ctx.fillStyle = "red";
-    ctx.font = "40px Arial";
-    ctx.textAlign = "center";
-
-    ctx.fillText(
-        playerScore,
-        canvas.width / 4,
-        50
-    );
-
-    ctx.fillText(
-        cpuScore,
-        canvas.width * 3 / 4,
-        50
-    );
         resetBall();
 
     }
@@ -94,27 +108,28 @@ function scoreCheck(){
     if(ball.x > canvas.width){
 
         playerScore++;
-        ctx.fillStyle = "cyan";
-    ctx.font = "40px Arial";
-    ctx.textAlign = "center";
-
-    ctx.fillText(
-        playerScore,
-        canvas.width / 4,
-        50
-    );
-
-    ctx.fillText(
-        cpuScore,
-        canvas.width * 3 / 4,
-        50
-    );
         resetBall();
 
     }
 
-}
 
+    // Win condition
+    if(playerScore >= 10){
+
+        gameOver = true;
+        winnerText = "PLAYER VICTORY!";
+
+    }
+
+
+    if(cpuScore >= 10){
+
+        gameOver = true;
+        winnerText = "CPU VICTORY!";
+
+    }
+
+}
 function checkCollision(){
 
     // Player paddle
@@ -181,6 +196,23 @@ function gameLoop() {
     ball.draw(ctx);
 
     drawScore();
+    drawWinner();
+
+    document.addEventListener("keydown", function(event){
+
+    if(event.key === "r" && gameOver){
+
+        playerScore = 0;
+        cpuScore = 0;
+
+        gameOver = false;
+        winnerText = "";
+
+        resetBall();
+
+    }
+
+});
     
     requestAnimationFrame(gameLoop);
 }
