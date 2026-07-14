@@ -1,27 +1,63 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Hyper Pong</title>
+
     <link rel="stylesheet" href="style.css">
+
 </head>
 
 <body>
 
-<canvas id="gameCanvas" width="1200" height="700"></canvas>
+<div id="gameContainer">
 
+    <canvas id="gameCanvas"></canvas>
+
+    <div id="ui">
+
+        <div id="topBar">
+
+            <div id="playerScore">0</div>
+
+            <div id="cenesDisplay">
+                ⭐ <span id="cenes">0</span> Cenes
+            </div>
+
+            <div id="cpuScore">0</div>
+
+        </div>
+
+
+        <div id="notification"></div>
+
+
+        <div id="victoryScreen" class="hidden">
+
+            <h1 id="winnerText"></h1>
+
+            <p>Press R to Play Again</p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<script src="sound.js"></script>
+<script src="stars.js"></script>
+<script src="particles.js"></script>
 <script src="paddle.js"></script>
 <script src="ball.js"></script>
 <script src="cpu.js"></script>
-<script src="cpurewards.js"></script>
-<script src="currency.js"></script>
-<script src="transaction.js"></script>
-<script src="economy.js"></script>
-<script src="saving.js"></script>
-<script src="abilities.js"></script>
-<script src="dash.js"></script>
-<script src="stars.js"></script>
-<script src="sound.js"></script>
 <script src="game.js"></script>
 
 </body>
+
 </html>
