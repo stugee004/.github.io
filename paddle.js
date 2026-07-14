@@ -34,47 +34,65 @@ class Paddle {
     }
 
 
-    draw(ctx) {
+draw(ctx) {
 
-        // Glow
-        ctx.shadowBlur = 20;
-        ctx.shadowColor = this.color;
-
-
-        // Gradient
-        let gradient = ctx.createLinearGradient(
-            this.x,
-            this.y,
-            this.x + this.width,
-            this.y
-        );
+    // Outer glow
+    ctx.shadowBlur = 25;
+    ctx.shadowColor = this.color;
 
 
-        gradient.addColorStop(0, this.color);
-        gradient.addColorStop(0.5, "white");
-        gradient.addColorStop(1, this.color);
+    // Main paddle gradient
+    let gradient = ctx.createLinearGradient(
+        this.x,
+        this.y,
+        this.x + this.width,
+        this.y
+    );
+
+    gradient.addColorStop(0, this.color);
+    gradient.addColorStop(0.5, "white");
+    gradient.addColorStop(1, this.color);
 
 
-        ctx.fillStyle = gradient;
+    ctx.fillStyle = gradient;
 
 
-        // Rounded paddle
-        ctx.beginPath();
+    // Paddle shape
+    ctx.beginPath();
 
-        ctx.roundRect(
-            this.x,
-            this.y,
-            this.width,
-            this.height,
-            12
-        );
+    ctx.roundRect(
+        this.x,
+        this.y,
+        this.width,
+        this.height,
+        12
+    );
 
-        ctx.fill();
+    ctx.fill();
 
 
-        // Turn glow off
-        ctx.shadowBlur = 0;
+    // Remove outer glow before outline
+    ctx.shadowBlur = 0;
 
-    }
+
+    // Inner energy outline
+    ctx.strokeStyle = this.color;
+    ctx.lineWidth = 4;
+
+    ctx.beginPath();
+
+    ctx.roundRect(
+        this.x + 3,
+        this.y + 3,
+        this.width - 6,
+        this.height - 6,
+        10
+    );
+
+    ctx.stroke();
+
+
+    // Reset
+    ctx.lineWidth = 1;
 
 }
