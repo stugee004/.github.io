@@ -18,12 +18,23 @@ let cenes = 0;
 let keys = {};
 
 window.addEventListener("keydown", function(event) {
-    keys[event.key] = true;
+    keys[event.key] = true
 });
 
 window.addEventListener("keyup", function(event) {
     keys[event.key] = false;
 });
+
+    function resetBall(){
+
+    ball.x = canvas.width / 2;
+    ball.y = canvas.height / 2;
+
+    ball.dx = Math.random() > .5 ? 6 : -6;
+
+    ball.dy = (Math.random()-0.5)*6;
+
+}
 
 function scoreCheck(){
 
@@ -104,17 +115,6 @@ function gameLoop() {
     player.update();
     cpu.update(ball);
     ball.update();
-
-    function resetBall(){
-
-    ball.x = canvas.width / 2;
-    ball.y = canvas.height / 2;
-
-    ball.dx = Math.random() > .5 ? 6 : -6;
-
-    ball.dy = (Math.random()-0.5)*6;
-
-}
 
     scoreCheck();
     checkCollision();
