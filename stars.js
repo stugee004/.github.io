@@ -1,19 +1,31 @@
 class Starfield {
 
-    constructor(count){
+    constructor(count = 180) {
 
         this.stars = [];
+
+        this.shootingStars = [];
+
+        this.constellation = null;
+
+        this.constellationProgress = 0;
+
+        this.constellationTimer = 0;
+
+        this.constellationName = "";
+
 
         for(let i = 0; i < count; i++){
 
             this.stars.push({
 
                 x: Math.random() * canvas.width,
+
                 y: Math.random() * canvas.height,
 
-                size: Math.random() * 2.5 + 0.5,
+                size: Math.random() * 2 + 0.5,
 
-                brightness: Math.random() * 0.8 + 0.2,
+                brightness: Math.random() * 0.7 + 0.3,
 
                 speed: Math.random() * 0.01 + 0.003,
 
@@ -23,205 +35,479 @@ class Starfield {
 
         }
 
-        this.constellation = null;
-        this.constellationTimer = 0;
 
-        // 5% chance when the game starts
-        if(Math.random() < 0.05){
+        // Small chance on start
+        if(Math.random() < 0.1){
+
             this.spawnConstellation();
+
         }
 
     }
+
+
+
+    constellations(){
+
+        return [
+
+            {
+                name:"Big Dipper",
+                stars:[
+                    [0,0],
+                    [50,-20],
+                    [100,0],
+                    [150,40],
+                    [200,80],
+                    [150,120],
+                    [90,110]
+                ]
+            },
+
+
+            {
+                name:"Orion",
+                stars:[
+                    [40,0],
+                    [100,60],
+                    [160,0],
+                    [100,120],
+                    [100,200],
+                    [50,260],
+                    [150,260]
+                ]
+            },
+
+
+            {
+                name:"Cassiopeia",
+                stars:[
+                    [0,50],
+                    [60,0],
+                    [120,60],
+                    [180,0],
+                    [240,50]
+                ]
+            },
+
+
+            {
+                name:"Leo",
+                stars:[
+                    [0,30],
+                    [70,70],
+                    [140,50],
+                    [200,120],
+                    [120,170],
+                    [50,130]
+                ]
+            },
+
+
+            {
+                name:"Scorpius",
+                stars:[
+                    [20,0],
+                    [60,60],
+                    [80,130],
+                    [140,170],
+                    [220,210],
+                    [260,270]
+                ]
+            },
+
+
+            {
+                name:"Crux",
+                stars:[
+                    [100,0],
+                    [100,140],
+                    [20,70],
+                    [180,70]
+                ]
+            },
+
+
+            {
+                name:"Pegasus",
+                stars:[
+                    [0,0],
+                    [130,0],
+                    [160,100],
+                    [30,130]
+                ]
+            },
+
+
+            {
+                name:"Ursa Minor",
+                stars:[
+                    [0,0],
+                    [40,40],
+                    [90,80],
+                    [140,120],
+                    [190,150]
+                ]
+            },
+
+
+            {
+                name:"Aquarius",
+                stars:[
+                    [0,20],
+                    [60,80],
+                    [120,30],
+                    [190,100],
+                    [140,170]
+                ]
+            },
+
+
+            {
+                name:"Ursa Major",
+                stars:[
+                    [0,80],
+                    [70,40],
+                    [140,70],
+                    [210,30],
+                    [270,80]
+                ]
+            }
+
+        ];
+
+    }
+
+
 
     spawnConstellation(){
 
-        const constellations = [
+        const list = this.constellations();
 
-            // Big Dipper
-            [
-                [0,0],[60,-20],[120,0],
-                [170,50],[220,90],[160,130],[100,120]
-            ],
+        const chosen =
+            list[Math.floor(Math.random()*list.length)];
 
-            // Orion
-            [
-                [0,0],[60,50],[120,0],
-                [60,120],[60,200],[0,260],[120,260]
-            ],
 
-            // Cassiopeia
-            [
-                [0,50],[60,0],[120,60],
-                [180,0],[240,50]
-            ],
+        const offsetX =
+            Math.random() * (canvas.width - 350) + 40;
 
-            // Leo
-            [
-                [20,20],[80,70],[150,60],
-                [200,120],[120,160],[60,130]
-            ],
 
-            // Scorpius
-            [
-                [20,0],[50,50],[70,120],
-                [120,160],[190,180],[220,240]
-            ],
+        const offsetY =
+            Math.random() * (canvas.height - 300) + 40;
 
-            // Crux
-            [
-                [100,0],[100,120],
-                [30,60],[170,60]
-            ],
 
-            // Pegasus
-            [
-                [0,0],[120,0],[150,100],[30,120]
-            ],
+        this.constellation =
+            chosen.stars.map(point => {
 
-            // Ursa Minor
-            [
-                [0,0],[40,30],[80,70],
-                [120,110],[160,140]
-            ],
+                return {
 
-            // Aquarius
-            [
-                [0,20],[60,70],[120,30],
-                [180,90],[130,160]
-            ],
+                    x: point[0] + offsetX,
 
-            // Ursa Major
-            [
-                [0,80],[60,50],[130,70],
-                [200,30],[250,80]
-            ]
+                    y: point[1] + offsetY
 
-        ];
+                };
 
-        const pattern = constellations[
-            Math.floor(Math.random() * constellations.length)
-        ];
+            });
 
-        // Random location on the screen
-        const offsetX = Math.random() * (canvas.width - 300) + 25;
-        const offsetY = Math.random() * (canvas.height - 300) + 25;
 
-        this.constellation = pattern.map(star => ({
-            x: star[0] + offsetX,
-            y: star[1] + offsetY
-        }));
+        this.constellationName = chosen.name;
+
+
+        this.constellationProgress = 0;
 
         this.constellationTimer = 900;
 
-        // Optional sound
+
         if(typeof playConstellation === "function"){
+
             playConstellation();
+
         }
 
     }
 
+
+
+    spawnShootingStar(){
+
+        this.shootingStars.push({
+
+            x: Math.random()*canvas.width,
+
+            y:0,
+
+            speed:8,
+
+            length:80
+
+        });
+
+    }
+
+
+
     update(){
+
+        // Star twinkle
 
         this.stars.forEach(star=>{
 
-            star.brightness += star.speed * star.direction;
+            star.brightness +=
+                star.speed * star.direction;
+
 
             if(star.brightness >= 1){
+
                 star.brightness = 1;
+
                 star.direction = -1;
+
             }
 
+
             if(star.brightness <= 0.2){
+
                 star.brightness = 0.2;
+
                 star.direction = 1;
+
             }
 
         });
 
+
+
+        // Shooting stars
+
+        this.shootingStars.forEach((s,index)=>{
+
+            s.x -= s.speed;
+
+            s.y += s.speed;
+
+
+            if(s.x < -100 || s.y > canvas.height){
+
+                this.shootingStars.splice(index,1);
+
+            }
+
+        });
+
+
+
+        if(Math.random()<0.002){
+
+            this.spawnShootingStar();
+
+        }
+
+
+
+        // Constellation reveal
+
         if(this.constellation){
+
+            this.constellationProgress += 0.03;
+
 
             this.constellationTimer--;
 
-            if(this.constellationTimer <= 0){
-                this.constellation = null;
+
+            if(this.constellationTimer<=0){
+
+                this.constellation=null;
+
             }
 
         }
 
-        // Small chance each frame
-        if(!this.constellation && Math.random() < 0.0005){
+
+        else if(Math.random()<0.0005){
+
             this.spawnConstellation();
+
         }
 
     }
 
+
+
+
+
     draw(ctx){
 
-        ctx.fillStyle = "white";
-
         // Normal stars
+
+        ctx.fillStyle="white";
+
+
         this.stars.forEach(star=>{
 
-            ctx.globalAlpha = star.brightness;
+            ctx.globalAlpha =
+                star.brightness;
+
 
             ctx.beginPath();
+
 
             ctx.arc(
                 star.x,
                 star.y,
                 star.size,
                 0,
-                Math.PI * 2
+                Math.PI*2
             );
+
 
             ctx.fill();
 
         });
 
-        // Draw constellation
-        if(this.constellation){
 
-            ctx.globalAlpha = 0.45;
 
-            ctx.strokeStyle = "white";
-            ctx.lineWidth = 1.5;
+        // Shooting stars
+
+        ctx.globalAlpha=0.8;
+
+        this.shootingStars.forEach(s=>{
+
+
+            ctx.strokeStyle="white";
+
+            ctx.lineWidth=2;
+
 
             ctx.beginPath();
 
-            this.constellation.forEach((star,index)=>{
+            ctx.moveTo(
+                s.x,
+                s.y
+            );
 
-                if(index === 0){
-                    ctx.moveTo(star.x, star.y);
-                }else{
-                    ctx.lineTo(star.x, star.y);
-                }
 
-            });
+            ctx.lineTo(
+                s.x+s.length,
+                s.y-s.length
+            );
+
 
             ctx.stroke();
 
-            // Bright stars
-            ctx.globalAlpha = 1;
 
-            this.constellation.forEach(star=>{
+        });
+
+
+
+
+        // Constellation
+
+        if(this.constellation){
+
+
+            const visible =
+                Math.floor(
+                    this.constellation.length *
+                    this.constellationProgress
+                );
+
+
+
+            ctx.globalAlpha=0.8;
+
+            ctx.strokeStyle="cyan";
+
+            ctx.lineWidth=2;
+
+
+            ctx.beginPath();
+
+
+            for(let i=0;i<visible;i++){
+
+
+                const star =
+                    this.constellation[i];
+
+
+                if(i===0){
+
+                    ctx.moveTo(
+                        star.x,
+                        star.y
+                    );
+
+                }
+                else{
+
+                    ctx.lineTo(
+                        star.x,
+                        star.y
+                    );
+
+                }
+
+            }
+
+
+            ctx.stroke();
+
+
+
+            ctx.globalAlpha=1;
+
+
+            for(let i=0;i<visible;i++){
+
+
+                const star =
+                    this.constellation[i];
+
+
+                ctx.shadowBlur=15;
+
+                ctx.shadowColor="cyan";
+
+                ctx.fillStyle="white";
+
 
                 ctx.beginPath();
+
 
                 ctx.arc(
                     star.x,
                     star.y,
-                    4,
+                    5,
                     0,
-                    Math.PI * 2
+                    Math.PI*2
                 );
+
 
                 ctx.fill();
 
-            });
+
+                ctx.shadowBlur=0;
+
+
+                if(typeof particles !== "undefined"){
+
+                    if(Math.random()<0.1){
+
+                        particles.sparkle(
+                            star.x,
+                            star.y
+                        );
+
+                    }
+
+                }
+
+            }
 
         }
 
-        ctx.globalAlpha = 1;
+
+        ctx.globalAlpha=1;
 
     }
 
