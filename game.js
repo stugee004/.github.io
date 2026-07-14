@@ -11,7 +11,6 @@ const cpu = new CPU(
     canvas.width-55,
     canvas.height/2-60,
     "red"
-    "medium"
 );
 const ball = new Ball();
 
