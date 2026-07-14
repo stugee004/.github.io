@@ -3,7 +3,11 @@ const ctx = canvas.getContext("2d");
 
 const stars = new Starfield(120);
 const player = new Paddle(20, canvas.height / 2 - 60);
-const cpu = new CPU(canvas.width - 40, canvas.height / 2 - 60, "medium");
+const cpu = new CPU(
+    canvas.width-40,
+    canvas.height/2-60,
+    "medium"
+);
 const ball = new Ball();
 
 let playerScore = 0;
