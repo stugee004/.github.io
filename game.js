@@ -97,8 +97,12 @@ window.addEventListener(
 
     }
 );
-
-
+window.addEventListener(
+    "keydown",
+    ()=>{
+        sounds.unlock();
+    }
+);
 
 // ============================
 // Setup
