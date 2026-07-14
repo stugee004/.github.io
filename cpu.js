@@ -3,6 +3,11 @@ class CPU extends Paddle {
     constructor(x,y,difficulty) {
         super(x, y);
         this.speed = 7;
+        this.speed =
+        difficulty==="easy" ? 4 :
+        difficulty==="medium" ? 6 :
+        difficulty==="hard" ? 9 :
+        12;
     }
 
     update(ball) {
