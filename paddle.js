@@ -21,7 +21,6 @@ class Paddle {
         this.y += this.velocity;
 
 
-        // Keep paddle on screen
         if(this.y < 0) {
             this.y = 0;
         }
@@ -34,65 +33,67 @@ class Paddle {
     }
 
 
-draw(ctx) {
+    draw(ctx) {
 
-    // Outer glow
-    ctx.shadowBlur = 25;
-    ctx.shadowColor = this.color;
-
-
-    // Main paddle gradient
-    let gradient = ctx.createLinearGradient(
-        this.x,
-        this.y,
-        this.x + this.width,
-        this.y
-    );
-
-    gradient.addColorStop(0, this.color);
-    gradient.addColorStop(0.5, "white");
-    gradient.addColorStop(1, this.color);
+        // Outer glow
+        ctx.shadowBlur = 25;
+        ctx.shadowColor = this.color;
 
 
-    ctx.fillStyle = gradient;
+        // Main gradient
+        let gradient = ctx.createLinearGradient(
+            this.x,
+            this.y,
+            this.x + this.width,
+            this.y
+        );
 
 
-    // Paddle shape
-    ctx.beginPath();
-
-    ctx.roundRect(
-        this.x,
-        this.y,
-        this.width,
-        this.height,
-        12
-    );
-
-    ctx.fill();
+        gradient.addColorStop(0, this.color);
+        gradient.addColorStop(0.5, "white");
+        gradient.addColorStop(1, this.color);
 
 
-    // Remove outer glow before outline
-    ctx.shadowBlur = 0;
+        ctx.fillStyle = gradient;
 
 
-    // Inner energy outline
-    ctx.strokeStyle = this.color;
-    ctx.lineWidth = 4;
+        // Main paddle
+        ctx.beginPath();
 
-    ctx.beginPath();
+        ctx.roundRect(
+            this.x,
+            this.y,
+            this.width,
+            this.height,
+            12
+        );
 
-    ctx.roundRect(
-        this.x + 3,
-        this.y + 3,
-        this.width - 6,
-        this.height - 6,
-        10
-    );
-
-    ctx.stroke();
+        ctx.fill();
 
 
-    // Reset
-    ctx.lineWidth = 1;
+        // Inner outline
+        ctx.shadowBlur = 0;
+
+        ctx.strokeStyle = this.color;
+        ctx.lineWidth = 4;
+
+        ctx.beginPath();
+
+        ctx.roundRect(
+            this.x + 3,
+            this.y + 3,
+            this.width - 6,
+            this.height - 6,
+            10
+        );
+
+        ctx.stroke();
+
+
+        // Reset canvas settings
+        ctx.shadowBlur = 0;
+        ctx.lineWidth = 1;
+
+    }
 
 }
