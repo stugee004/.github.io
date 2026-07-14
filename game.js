@@ -2,9 +2,6 @@ const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
 const stars = new Starfield(120);
-stars.update();
-stars.draw(ctx);
-
 const player = new Paddle(20, canvas.height / 2 - 60);
 const cpu = new CPU(canvas.width - 40, canvas.height / 2 - 60, "medium");
 const ball = new Ball();
@@ -68,7 +65,11 @@ function checkCollision(){
 function gameLoop() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+    
+    // Draw space background
+    stars.update();
+    stars.draw(ctx);
+    
     controlPlayer();
     
     player.update();
