@@ -6,6 +6,11 @@ const player = new Paddle(20, canvas.height / 2 - 60);
 const cpu = new CPU(canvas.width - 40, canvas.height / 2 - 60, "medium");
 const ball = new Ball();
 
+let playerScore = 0;
+let cpuScore = 0;
+
+let cenes = 0;
+
 let keys = {};
 
 window.addEventListener("keydown", function(event) {
@@ -16,6 +21,26 @@ window.addEventListener("keyup", function(event) {
     keys[event.key] = false;
 });
 
+function scoreCheck(){
+
+    if(ball.x < 0){
+
+        cpuScore++;
+
+        resetBall();
+
+    }
+
+
+    if(ball.x > canvas.width){
+
+        playerScore++;
+
+        resetBall();
+
+    }
+
+}
 
 function checkCollision(){
 
@@ -76,6 +101,18 @@ function gameLoop() {
     cpu.update(ball);
     ball.update();
 
+    function resetBall(){
+
+    ball.x = canvas.width / 2;
+    ball.y = canvas.height / 2;
+
+    ball.dx = Math.random() > .5 ? 6 : -6;
+
+    ball.dy = (Math.random()-0.5)*6;
+
+}
+
+    scoreCheck();
     checkCollision();
     player.draw(ctx);
     cpu.draw(ctx);
@@ -85,6 +122,21 @@ function gameLoop() {
 }
 
 gameLoop();
+
+ctx.fillStyle="white";
+ctx.font="40px Arial";
+
+ctx.fillText(
+    playerScore,
+    canvas.width/4,
+    50
+);
+
+ctx.fillText(
+    cpuScore,
+    canvas.width*3/4,
+    50
+);
 
 function controlPlayer() {
 
