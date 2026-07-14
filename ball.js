@@ -21,9 +21,10 @@ class Ball {
         this.x += this.dx;
         this.y += this.dy;
 
-        if(this.y<0 || this.y>canvas.height)
+        if(this.y<0 || this.y>canvas.height){
             playWall();
             this.dy *= -1;
+        }
     }
 
     draw(ctx){
