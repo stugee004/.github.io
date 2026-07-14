@@ -22,6 +22,7 @@ class Ball {
         this.y += this.dy;
 
         if(this.y<0 || this.y>canvas.height)
+            playWall();
             this.dy *= -1;
     }
 
