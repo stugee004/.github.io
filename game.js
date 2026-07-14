@@ -21,3 +21,27 @@ function gameLoop() {
 }
 
 gameLoop();
+let keys = {};
+
+window.addEventListener("keydown", function(event) {
+    keys[event.key] = true;
+});
+
+window.addEventListener("keyup", function(event) {
+    keys[event.key] = false;
+});
+
+
+function controlPlayer() {
+
+    player.velocity = 0;
+
+    if(keys["ArrowUp"]) {
+        player.velocity = -player.speed;
+    }
+
+    if(keys["ArrowDown"]) {
+        player.velocity = player.speed;
+    }
+
+}
