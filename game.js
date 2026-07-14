@@ -1,9 +1,9 @@
-// ============================
-// Hyper Pong Game Engine
-// ============================
+// =====================================
+// Hyper Pong Main Game Controller
+// =====================================
 
 
-// Canvas setup
+// Canvas
 
 const canvas = document.getElementById("gameCanvas");
 
@@ -30,9 +30,18 @@ window.addEventListener(
 
 
 
-// ============================
-// Game Objects
-// ============================
+
+// =====================================
+// Game State
+// =====================================
+
+
+let gameStarted = false;
+
+let gameOver = false;
+
+let winner = "";
+
 
 
 let player;
@@ -52,16 +61,10 @@ let playerScore = 0;
 let cpuScore = 0;
 
 
-let gameOver = false;
 
-let winner = "";
-
-
-
-
-// ============================
-// Input
-// ============================
+// =====================================
+// Controls
+// =====================================
 
 
 const keys = {};
@@ -71,6 +74,7 @@ const keys = {};
 window.addEventListener(
     "keydown",
     e=>{
+
 
         keys[e.key] = true;
 
@@ -83,6 +87,15 @@ window.addEventListener(
             resetGame();
 
         }
+
+
+
+        if(typeof sounds !== "undefined"){
+
+            sounds.unlock();
+
+        }
+
 
     }
 );
@@ -97,54 +110,59 @@ window.addEventListener(
 
     }
 );
-window.addEventListener(
-    "keydown",
-    ()=>{
-        sounds.unlock();
-    }
-);
-
-// ============================
-// Setup
-// ============================
-
-
-function setup(){
-
-
-    player = new Paddle(
-
-        40,
-
-        canvas.height / 2 - 60,
-
-        "cyan"
-
-    );
 
 
 
-    cpu = new CPU(
 
-        canvas.width - 60,
+// =====================================
+// Create Game
+// =====================================
 
-        canvas.height / 2 - 60,
 
-        "medium"
-
-    );
+function createGame(){
 
 
 
-    ball = new Ball();
+    player =
+        new Paddle(
+
+            40,
+
+            canvas.height / 2 - 60,
+
+            "cyan"
+
+        );
 
 
 
-    stars = new Starfield();
+    cpu =
+        new CPU(
+
+            canvas.width - 60,
+
+            canvas.height / 2 - 60,
+
+            save.get(
+                "settings.difficulty"
+            ) || "medium"
+
+        );
 
 
 
-    particles = new ParticleSystem();
+    ball =
+        new Ball();
+
+
+
+    stars =
+        new Starfield(120);
+
+
+
+    particles =
+        new ParticleSystem();
 
 
 
@@ -152,25 +170,68 @@ function setup(){
 
 
 
-setup();
+
+createGame();
 
 
 
-// ============================
+
+// =====================================
+// Start Game
+// =====================================
+
+
+function startGame(){
+
+
+    gameStarted = true;
+
+
+    gameOver = false;
+
+
+    winner = "";
+
+
+    resetGame();
+
+
+}
+
+
+
+
+
+// =====================================
 // Update
-// ============================
+// =====================================
 
 
 function update(){
 
 
-    if(gameOver){
-
-        particles.update();
+    if(!gameStarted){
 
         return;
 
     }
+
+
+
+    if(gameOver){
+
+        if(particles){
+
+            particles.update();
+
+        }
+
+
+        return;
+
+    }
+
+
 
 
 
@@ -184,6 +245,7 @@ function update(){
     }
 
 
+
     if(keys["ArrowDown"]){
 
         player.move(1);
@@ -192,7 +254,21 @@ function update(){
 
 
 
+
+
     player.update();
+
+
+
+    if(typeof abilities !== "undefined"){
+
+        abilities.applyPlayerEffects(
+            player
+        );
+
+    }
+
+
 
 
     cpu.update(ball);
@@ -203,46 +279,109 @@ function update(){
 
 
 
-    // Collision
+
+    if(typeof abilities !== "undefined"){
+
+        abilities.applyBallEffects(
+            ball
+        );
+
+        abilities.update();
+
+    }
 
 
-    ball.checkPaddleCollision(player);
-
-    ball.checkPaddleCollision(cpu);
 
 
+    ball.checkPaddleCollision(
+        player
+    );
 
-    // Scores
+
+    ball.checkPaddleCollision(
+        cpu
+    );
+
+
+
+
+
+    // Scoring
 
 
     if(ball.x < 0){
 
+
         cpuScore++;
 
-        scoreEffect("CPU");
+
+        if(typeof economy !== "undefined"){
+
+            economy.scoreReward();
+
+        }
+
+
+        if(typeof playScore === "function"){
+
+            playScore();
+
+        }
+
 
         resetRound();
 
+
     }
+
+
+
 
 
 
     if(ball.x > canvas.width){
 
+
         playerScore++;
 
-        scoreEffect("PLAYER");
+
+        if(typeof economy !== "undefined"){
+
+            economy.scoreReward();
+
+        }
+
+
+        if(typeof playScore === "function"){
+
+            playScore();
+
+        }
+
 
         resetRound();
 
+
     }
+
+
+
+
+
+
+    checkVictory();
 
 
 
     stars.update();
 
 
-    particles.update();
+
+    if(particles){
+
+        particles.update();
+
+    }
 
 
 }
@@ -251,55 +390,77 @@ function update(){
 
 
 
-
-// ============================
-// Drawing
-// ============================
+// =====================================
+// Draw
+// =====================================
 
 
 function draw(){
 
 
-    // Space background
 
     ctx.fillStyle="black";
+
 
     ctx.fillRect(
 
         0,
+
         0,
+
         canvas.width,
+
         canvas.height
 
     );
 
 
 
-    stars.draw(ctx);
+    if(stars){
+
+        stars.draw(ctx);
+
+    }
 
 
 
-    // Middle line
+    // Center line
+
 
     ctx.globalAlpha=.3;
 
+
     ctx.strokeStyle="white";
 
-    ctx.setLineDash([10,10]);
+
+    ctx.setLineDash(
+        [10,10]
+    );
+
 
     ctx.beginPath();
 
+
     ctx.moveTo(
+
         canvas.width/2,
+
         0
+
     );
+
 
     ctx.lineTo(
+
         canvas.width/2,
+
         canvas.height
+
     );
 
+
     ctx.stroke();
+
 
 
     ctx.setLineDash([]);
@@ -309,14 +470,37 @@ function draw(){
 
 
 
-    player.draw(ctx);
-
-    cpu.draw(ctx);
-
-    ball.draw(ctx);
 
 
-    particles.draw(ctx);
+    if(player){
+
+        player.draw(ctx);
+
+    }
+
+
+
+    if(cpu){
+
+        cpu.draw(ctx);
+
+    }
+
+
+
+    if(ball){
+
+        ball.draw(ctx);
+
+    }
+
+
+
+    if(particles){
+
+        particles.draw(ctx);
+
+    }
 
 
 
@@ -337,11 +521,9 @@ function draw(){
 
 
 
-
-
-// ============================
+// =====================================
 // Score
-// ============================
+// =====================================
 
 
 function drawScore(){
@@ -352,7 +534,9 @@ function drawScore(){
 
     ctx.fillStyle="white";
 
+
     ctx.font="50px Arial";
+
 
     ctx.textAlign="center";
 
@@ -362,18 +546,19 @@ function drawScore(){
 
         playerScore,
 
-        canvas.width/2 - 80,
+        canvas.width/2-80,
 
         70
 
     );
 
 
+
     ctx.fillText(
 
         cpuScore,
 
-        canvas.width/2 + 80,
+        canvas.width/2+80,
 
         70
 
@@ -388,12 +573,9 @@ function drawScore(){
 
 
 
-
-
-
-// ============================
+// =====================================
 // Victory
-// ============================
+// =====================================
 
 
 function checkVictory(){
@@ -401,7 +583,11 @@ function checkVictory(){
 
     if(playerScore >= 5){
 
-        endGame("PLAYER VICTORY");
+
+        endGame(
+            "PLAYER VICTORY"
+        );
+
 
     }
 
@@ -409,12 +595,18 @@ function checkVictory(){
 
     if(cpuScore >= 5){
 
-        endGame("CPU VICTORY");
+
+        endGame(
+            "CPU VICTORY"
+        );
+
 
     }
 
 
 }
+
+
 
 
 
@@ -423,20 +615,34 @@ function endGame(text){
 
     gameOver = true;
 
+
     winner = text;
 
 
 
-    particles.firework(
+    if(
+        text === "PLAYER VICTORY" &&
+        typeof economy !== "undefined"
+    ){
 
-        canvas.width/2,
+        economy.victoryReward();
 
-        canvas.height/2
+    }
 
-    );
+
+
+    if(typeof playVictory === "function"){
+
+        playVictory();
+
+    }
 
 
 }
+
+
+
+
 
 
 
@@ -446,13 +652,19 @@ function drawVictory(){
     ctx.save();
 
 
-    ctx.fillStyle="rgba(0,0,0,.5)";
+
+    ctx.fillStyle =
+        "rgba(0,0,0,.6)";
+
 
     ctx.fillRect(
 
         0,
+
         0,
+
         canvas.width,
+
         canvas.height
 
     );
@@ -462,11 +674,10 @@ function drawVictory(){
     ctx.fillStyle="white";
 
 
-    ctx.font="70px Arial";
-
-
     ctx.textAlign="center";
 
+
+    ctx.font="70px Arial";
 
 
     ctx.fillText(
@@ -490,9 +701,10 @@ function drawVictory(){
 
         canvas.width/2,
 
-        canvas.height/2 + 60
+        canvas.height/2+60
 
     );
+
 
 
     ctx.restore();
@@ -503,12 +715,9 @@ function drawVictory(){
 
 
 
-
-
-
-// ============================
+// =====================================
 // Reset
-// ============================
+// =====================================
 
 
 function resetRound(){
@@ -517,24 +726,31 @@ function resetRound(){
     ball.reset();
 
 
+
 }
+
+
 
 
 
 function resetGame(){
 
 
-    playerScore = 0;
 
-    cpuScore = 0;
+    playerScore=0;
 
 
-    gameOver = false;
+    cpuScore=0;
+
+
+    gameOver=false;
+
 
     winner="";
 
 
-    ball.reset();
+
+    createGame();
 
 
 }
@@ -544,46 +760,16 @@ function resetGame(){
 
 
 
-
-// ============================
-// Effects
-// ============================
-
-
-function scoreEffect(team){
-
-
-    particles.burst(
-
-        canvas.width/2,
-
-        canvas.height/2,
-
-        team==="PLAYER"
-        ? "cyan"
-        : "red",
-
-        50
-
-    );
-
-
-}
-
-
-
-
-
-
-// ============================
+// =====================================
 // Main Loop
-// ============================
+// =====================================
 
 
 function gameLoop(){
 
 
     update();
+
 
     draw();
 
