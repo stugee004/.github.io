@@ -1,243 +1,596 @@
+// ============================
+// Hyper Pong Game Engine
+// ============================
+
+
+// Canvas setup
+
 const canvas = document.getElementById("gameCanvas");
+
 const ctx = canvas.getContext("2d");
 
-const stars = new Starfield(120);
-const player = new Paddle(
-    30,
-    canvas.height/2-60,
-    "cyan"
+
+
+function resizeCanvas(){
+
+    canvas.width = window.innerWidth;
+
+    canvas.height = window.innerHeight;
+
+}
+
+
+resizeCanvas();
+
+
+window.addEventListener(
+    "resize",
+    resizeCanvas
 );
-const cpu = new CPU(
-    canvas.width-55,
-    canvas.height/2-60,
-    "red"
-);
-const ball = new Ball();
+
+
+
+// ============================
+// Game Objects
+// ============================
+
+
+let player;
+
+let cpu;
+
+let ball;
+
+let stars;
+
+let particles;
+
+
 
 let playerScore = 0;
+
 let cpuScore = 0;
 
+
 let gameOver = false;
-let winnerText = "";
 
-let cenes = 0;
+let winner = "";
 
-let keys = {};
 
-window.addEventListener("keydown", function(event) {
-    keys[event.key] = true
-});
 
-window.addEventListener("keyup", function(event) {
-    keys[event.key] = false;
-});
 
-function drawWinner(){
+// ============================
+// Input
+// ============================
+
+
+const keys = {};
+
+
+
+window.addEventListener(
+    "keydown",
+    e=>{
+
+        keys[e.key] = true;
+
+
+        if(
+            e.key === "r" ||
+            e.key === "R"
+        ){
+
+            resetGame();
+
+        }
+
+    }
+);
+
+
+
+window.addEventListener(
+    "keyup",
+    e=>{
+
+        keys[e.key] = false;
+
+    }
+);
+
+
+
+// ============================
+// Setup
+// ============================
+
+
+function setup(){
+
+
+    player = new Paddle(
+
+        40,
+
+        canvas.height / 2 - 60,
+
+        "cyan"
+
+    );
+
+
+
+    cpu = new CPU(
+
+        canvas.width - 60,
+
+        canvas.height / 2 - 60,
+
+        "medium"
+
+    );
+
+
+
+    ball = new Ball();
+
+
+
+    stars = new Starfield();
+
+
+
+    particles = new ParticleSystem();
+
+
+
+}
+
+
+
+setup();
+
+
+
+// ============================
+// Update
+// ============================
+
+
+function update(){
+
 
     if(gameOver){
 
-        ctx.fillStyle = "white";
-        ctx.font = "50px Arial";
-        ctx.textAlign = "center";
+        particles.update();
 
-        ctx.fillText(
-            winnerText,
-            canvas.width / 2,
-            canvas.height / 2
-        );
-
-        ctx.font = "25px Arial";
-
-        ctx.fillText(
-            "Press R to restart",
-            canvas.width / 2,
-            canvas.height / 2 + 60
-        );
+        return;
 
     }
 
-}
 
-function drawScore(){
 
-    ctx.fillStyle = "white";
-    ctx.font = "40px Arial";
-    ctx.textAlign = "center";
+    // Player movement
 
-    ctx.fillText(
-        playerScore,
-        canvas.width / 4,
-        50
-    );
 
-    ctx.fillText(
-        cpuScore,
-        canvas.width * 3 / 4,
-        50
-    );
+    if(keys["ArrowUp"]){
 
-}
+        player.move(-1);
 
-function resetBall(){
+    }
 
-    ball.x = canvas.width / 2;
-    ball.y = canvas.height / 2;
 
-    ball.dx = 0;
-    ball.dy = 0;
+    if(keys["ArrowDown"]){
 
-    setTimeout(()=>{
+        player.move(1);
 
-        ball.dx = Math.random() > .5 ? 6 : -6;
-        ball.dy = (Math.random()-0.5)*6;
+    }
 
-    },1000);
 
-}
 
-function scoreCheck(){
+    player.update();
+
+
+    cpu.update(ball);
+
+
+
+    ball.update();
+
+
+
+    // Collision
+
+
+    ball.checkPaddleCollision(player);
+
+    ball.checkPaddleCollision(cpu);
+
+
+
+    // Scores
+
 
     if(ball.x < 0){
 
         cpuScore++;
-        resetBall();
+
+        scoreEffect("CPU");
+
+        resetRound();
 
     }
+
 
 
     if(ball.x > canvas.width){
 
         playerScore++;
-        resetBall();
+
+        scoreEffect("PLAYER");
+
+        resetRound();
 
     }
 
 
-    // Win condition
-    if(playerScore >= 10){
 
-        gameOver = true;
-        winnerText = "PLAYER VICTORY!";
-        playVictory();
-
-    }
-
-
-    if(cpuScore >= 10){
-
-        gameOver = true;
-        winnerText = "CPU VICTORY!";
-        playDefeat();
-
-    }
-
-}
-function checkCollision(){
-
-    // Player paddle
-    if(
-        ball.x - ball.radius < player.x + player.width &&
-        ball.x + ball.radius > player.x &&
-        ball.y > player.y &&
-        ball.y < player.y + player.height
-    ){
-
-        // Reverse horizontal direction
-        ball.dx *= -1;
-        playHit();
-
-        // Add spin without flipping vertical direction
-        let hit = ball.y - (player.y + player.height / 2);
-
-        ball.dy += hit * 0.05;
-
-        if(ball.dy > 8) ball.dy = 8;
-        if(ball.dy < -8) ball.dy = -8;
-    }
-
-
-    // CPU paddle
-    if(
-        ball.x + ball.radius > cpu.x &&
-        ball.x - ball.radius < cpu.x + cpu.width &&
-        ball.y > cpu.y &&
-        ball.y < cpu.y + cpu.height
-    ){
-
-        // Reverse horizontal direction
-        ball.dx *= -1;
-        playHit();
-
-        // Add spin without flipping vertical direction
-        let hit = ball.y - (cpu.y + cpu.height / 2);
-
-        ball.dy += hit * 0.05;
-
-        if(ball.dy > 8) ball.dy = 8;
-        if(ball.dy < -8) ball.dy = -8;
-    }
-
-}
-
-function gameLoop() {
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    // Draw space background
     stars.update();
+
+
+    particles.update();
+
+
+}
+
+
+
+
+
+
+// ============================
+// Drawing
+// ============================
+
+
+function draw(){
+
+
+    // Space background
+
+    ctx.fillStyle="black";
+
+    ctx.fillRect(
+
+        0,
+        0,
+        canvas.width,
+        canvas.height
+
+    );
+
+
+
     stars.draw(ctx);
-    
-    controlPlayer();
 
-     if(!gameOver){
-    
-    player.update();
-    cpu.update(ball);
-    ball.update();
 
-    scoreCheck();
-    checkCollision();
 
-     }
-         
+    // Middle line
+
+    ctx.globalAlpha=.3;
+
+    ctx.strokeStyle="white";
+
+    ctx.setLineDash([10,10]);
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        canvas.width/2,
+        0
+    );
+
+    ctx.lineTo(
+        canvas.width/2,
+        canvas.height
+    );
+
+    ctx.stroke();
+
+
+    ctx.setLineDash([]);
+
+
+    ctx.globalAlpha=1;
+
+
+
     player.draw(ctx);
+
     cpu.draw(ctx);
+
     ball.draw(ctx);
 
+
+    particles.draw(ctx);
+
+
+
     drawScore();
-    drawWinner();
-         
-    document.addEventListener("keydown", function(event){
 
-    if(event.key === "r" && gameOver){
 
-        playerScore = 0;
-        cpuScore = 0;
 
-        gameOver = false;
-        winnerText = "";
+    if(gameOver){
 
-        resetBall();
+        drawVictory();
 
     }
 
-});
-    
-    requestAnimationFrame(gameLoop);
+
 }
+
+
+
+
+
+
+
+// ============================
+// Score
+// ============================
+
+
+function drawScore(){
+
+
+    ctx.save();
+
+
+    ctx.fillStyle="white";
+
+    ctx.font="50px Arial";
+
+    ctx.textAlign="center";
+
+
+
+    ctx.fillText(
+
+        playerScore,
+
+        canvas.width/2 - 80,
+
+        70
+
+    );
+
+
+    ctx.fillText(
+
+        cpuScore,
+
+        canvas.width/2 + 80,
+
+        70
+
+    );
+
+
+    ctx.restore();
+
+
+}
+
+
+
+
+
+
+
+// ============================
+// Victory
+// ============================
+
+
+function checkVictory(){
+
+
+    if(playerScore >= 5){
+
+        endGame("PLAYER VICTORY");
+
+    }
+
+
+
+    if(cpuScore >= 5){
+
+        endGame("CPU VICTORY");
+
+    }
+
+
+}
+
+
+
+function endGame(text){
+
+
+    gameOver = true;
+
+    winner = text;
+
+
+
+    particles.firework(
+
+        canvas.width/2,
+
+        canvas.height/2
+
+    );
+
+
+}
+
+
+
+function drawVictory(){
+
+
+    ctx.save();
+
+
+    ctx.fillStyle="rgba(0,0,0,.5)";
+
+    ctx.fillRect(
+
+        0,
+        0,
+        canvas.width,
+        canvas.height
+
+    );
+
+
+
+    ctx.fillStyle="white";
+
+
+    ctx.font="70px Arial";
+
+
+    ctx.textAlign="center";
+
+
+
+    ctx.fillText(
+
+        winner,
+
+        canvas.width/2,
+
+        canvas.height/2
+
+    );
+
+
+
+    ctx.font="30px Arial";
+
+
+    ctx.fillText(
+
+        "Press R to restart",
+
+        canvas.width/2,
+
+        canvas.height/2 + 60
+
+    );
+
+
+    ctx.restore();
+
+
+}
+
+
+
+
+
+
+
+// ============================
+// Reset
+// ============================
+
+
+function resetRound(){
+
+
+    ball.reset();
+
+
+}
+
+
+
+function resetGame(){
+
+
+    playerScore = 0;
+
+    cpuScore = 0;
+
+
+    gameOver = false;
+
+    winner="";
+
+
+    ball.reset();
+
+
+}
+
+
+
+
+
+
+
+// ============================
+// Effects
+// ============================
+
+
+function scoreEffect(team){
+
+
+    particles.burst(
+
+        canvas.width/2,
+
+        canvas.height/2,
+
+        team==="PLAYER"
+        ? "cyan"
+        : "red",
+
+        50
+
+    );
+
+
+}
+
+
+
+
+
+
+// ============================
+// Main Loop
+// ============================
+
+
+function gameLoop(){
+
+
+    update();
+
+    draw();
+
+
+    requestAnimationFrame(
+        gameLoop
+    );
+
+
+}
+
+
 
 gameLoop();
-
-function controlPlayer() {
-
-    player.velocity = 0;
-
-    if(keys["ArrowUp"]) {
-        player.velocity = -player.speed;
-    }
-
-    if(keys["ArrowDown"]) {
-        player.velocity = player.speed;
-    }
-
-}
