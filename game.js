@@ -5,6 +5,17 @@ const player = new Paddle(20, canvas.height / 2 - 60);
 const cpu = new CPU(canvas.width - 40, canvas.height / 2 - 60, "medium");
 const ball = new Ball();
 
+let keys = {};
+
+window.addEventListener("keydown", function(event) {
+    keys[event.key] = true;
+});
+
+window.addEventListener("keyup", function(event) {
+    keys[event.key] = false;
+});
+
+
 function checkCollision(){
 
     // Player paddle
@@ -56,16 +67,6 @@ function gameLoop() {
 }
 
 gameLoop();
-let keys = {};
-
-window.addEventListener("keydown", function(event) {
-    keys[event.key] = true;
-});
-
-window.addEventListener("keyup", function(event) {
-    keys[event.key] = false;
-});
-
 
 function controlPlayer() {
 
