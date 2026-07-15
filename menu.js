@@ -1,53 +1,82 @@
-class Menu {
+class MenuManager {
 
 
     constructor(){
 
 
-        this.visible = true;
+        this.screen = "menu";
 
 
-        this.buttons = [
-
-            {
-                text: "PLAY",
-                action: ()=>{
-
-                    this.startGame();
-
-                }
-
-            },
-
-
-            {
-                text: "SHOP",
-                action: ()=>{
-
-                    this.openShop();
-
-                }
-
-            },
-
-
-            {
-                text: "ABILITIES",
-                action: ()=>{
-
-                    this.openAbilities();
-
-                }
-
-            }
-
-
-        ];
-
+        this.createMenu();
 
 
     }
 
+
+
+
+
+
+
+    createMenu(){
+
+
+        const menu =
+            document.createElement("div");
+
+
+        menu.id = "mainMenu";
+
+
+        menu.innerHTML = `
+
+            <h1>HYPER PONG</h1>
+
+
+            <div id="cenes">
+                0
+            </div>
+
+
+
+            <button id="playButton">
+                PLAY
+            </button>
+
+
+
+            <button id="difficultyButton">
+                Difficulty: Medium
+            </button>
+
+
+
+            <button id="shopButton">
+                Shop
+            </button>
+
+
+
+            <button id="abilitiesButton">
+                Abilities
+            </button>
+
+        `;
+
+
+
+        document.body.appendChild(menu);
+
+
+
+        this.menu = menu;
+
+
+
+        this.connectButtons();
+
+
+    }
 
 
 
@@ -61,13 +90,14 @@ class Menu {
         if(typeof sounds !== "undefined"){
 
 
-            sounds.unlock();
-
-
             sounds.playTone(
+
                 600,
+
                 0.08,
+
                 "square"
+
             );
 
 
@@ -82,30 +112,248 @@ class Menu {
 
 
 
+    startSound(){
+
+
+        if(typeof sounds !== "undefined"){
+
+
+            sounds.unlock();
+
+
+            sounds.playTone(
+
+                800,
+
+                0.1,
+
+                "square"
+
+            );
+
+
+        }
+
+
+    }
+
+
+
+
+
+
+
+    connectButtons(){
+
+
+
+        document
+        .getElementById(
+            "playButton"
+        )
+        .onclick = ()=>{
+
+
+            this.startSound();
+
+
+            this.startGame();
+
+
+        };
+
+
+
+
+
+
+
+        document
+        .getElementById(
+            "difficultyButton"
+        )
+        .onclick = ()=>{
+
+
+            this.clickSound();
+
+
+            this.changeDifficulty();
+
+
+        };
+
+
+
+
+
+
+
+        document
+        .getElementById(
+            "shopButton"
+        )
+        .onclick = ()=>{
+
+
+            this.clickSound();
+
+
+            this.openShop();
+
+
+        };
+
+
+
+
+
+
+
+        document
+        .getElementById(
+            "abilitiesButton"
+        )
+        .onclick = ()=>{
+
+
+            this.clickSound();
+
+
+            this.openAbilities();
+
+
+        };
+
+
+    }
+
+
+
+
+
 
 
     startGame(){
 
 
 
-        this.clickSound();
+        this.screen =
+            "game";
 
 
 
-        this.visible = false;
+        this.menu.style.display =
+            "none";
 
 
 
-        if(typeof startGame === "function"){
 
-            startGame();
+
+        if(typeof resetGame === "function"){
+
+
+            resetGame();
+
 
         }
 
 
 
+        gameStarted = true;
+
+
+
     }
 
+
+
+
+
+
+
+
+    changeDifficulty(){
+
+
+
+        let current =
+            save.get(
+                "settings.difficulty"
+            );
+
+
+
+        let next;
+
+
+
+        if(current === "easy"){
+
+
+            next = "medium";
+
+
+        }
+
+        else if(current === "medium"){
+
+
+            next = "hard";
+
+
+        }
+
+        else{
+
+
+            next = "easy";
+
+
+        }
+
+
+
+
+
+
+        save.set(
+
+            "settings.difficulty",
+
+            next
+
+        );
+
+
+
+
+
+
+
+        let display =
+            next.charAt(0).toUpperCase()
+            +
+            next.slice(1);
+
+
+
+
+
+
+        document
+        .getElementById(
+            "difficultyButton"
+        )
+        .innerText =
+
+            "Difficulty: "
+            +
+            display;
+
+
+
+    }
 
 
 
@@ -118,7 +366,9 @@ class Menu {
 
 
 
-        this.clickSound();
+        console.log(
+            "Shop opened"
+        );
 
 
 
@@ -129,19 +379,10 @@ class Menu {
 
 
         }
-        else{
 
-
-            console.log(
-                "Shop UI not loaded"
-            );
-
-
-        }
 
 
     }
-
 
 
 
@@ -154,7 +395,9 @@ class Menu {
 
 
 
-        this.clickSound();
+        console.log(
+            "Abilities opened"
+        );
 
 
 
@@ -165,83 +408,6 @@ class Menu {
 
 
         }
-        else{
-
-
-            console.log(
-                "Abilities UI not loaded"
-            );
-
-
-        }
-
-
-    }
-
-
-
-
-
-
-
-
-    draw(ctx){
-
-
-
-        if(!this.visible){
-
-            return;
-
-        }
-
-
-
-        ctx.fillStyle="white";
-
-
-        ctx.font="50px Arial";
-
-
-        ctx.textAlign="center";
-
-
-
-        ctx.fillText(
-
-            "HYPER PONG",
-
-            canvas.width/2,
-
-            150
-
-        );
-
-
-
-        this.buttons.forEach(
-
-            (button,index)=>{
-
-
-                ctx.font="30px Arial";
-
-
-
-                ctx.fillText(
-
-                    button.text,
-
-                    canvas.width/2,
-
-                    260 + index*70
-
-                );
-
-
-            }
-
-        );
 
 
 
@@ -254,46 +420,29 @@ class Menu {
 
 
 
-
-    handleClick(x,y){
-
-
-
-        if(!this.visible){
-
-            return;
-
-        }
+    show(){
 
 
 
-        this.buttons.forEach(
+        this.menu.style.display =
+            "block";
 
-            (button,index)=>{
 
-
-                const buttonY =
-                    230 + index*70;
+    }
 
 
 
-                if(
-                    y > buttonY &&
-                    y < buttonY + 50
-                ){
-
-
-                    button.action();
-
-
-                }
 
 
 
-            }
 
-        );
 
+    hide(){
+
+
+
+        this.menu.style.display =
+            "none";
 
 
     }
@@ -306,5 +455,7 @@ class Menu {
 
 
 
+
+
 const menu =
-    new Menu();
+    new MenuManager();
