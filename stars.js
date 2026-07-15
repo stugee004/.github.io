@@ -21,10 +21,12 @@ class Starfield {
                 size: Math.random() * 2.5 + 0.5,
 
 
-                brightness: Math.random() * 0.6 + 0.4,
+                brightness:
+                    Math.random() * 0.7 + 0.3,
 
 
-                speed: Math.random() * 0.008 + 0.002,
+                speed:
+                    Math.random() * 0.008 + 0.002,
 
 
                 direction:
@@ -38,6 +40,7 @@ class Starfield {
 
 
 
+
         this.constellation = null;
 
         this.constellationName = "";
@@ -46,7 +49,6 @@ class Starfield {
 
 
 
-        // Chance at start
 
         if(Math.random() < 0.05){
 
@@ -63,11 +65,13 @@ class Starfield {
 
 
 
+
+
     spawnConstellation(){
 
 
-        const constellations = [
 
+        const constellations = [
 
 
             {
@@ -260,7 +264,9 @@ class Starfield {
 
 
 
-        let chosen =
+
+
+        const chosen =
             constellations[
                 Math.floor(
                     Math.random()
@@ -273,7 +279,16 @@ class Starfield {
 
 
 
-        // Convert arrays into objects
+
+
+        this.constellationName =
+            chosen.name;
+
+
+
+
+
+
 
         this.constellation =
             chosen.stars.map(point=>{
@@ -293,23 +308,25 @@ class Starfield {
 
 
 
-        this.constellationName =
-            chosen.name;
-
 
 
         this.constellationTimer = 900;
 
 
 
+
+
         if(typeof sounds !== "undefined"){
 
-    sounds.constellation();
+            sounds.constellation();
 
-}
+        }
+
 
 
     }
+
+
 
 
 
@@ -330,6 +347,7 @@ class Starfield {
 
 
 
+
             if(star.brightness >= 1){
 
 
@@ -342,10 +360,12 @@ class Starfield {
 
 
 
-            if(star.brightness <= 0.25){
 
 
-                star.brightness = 0.25;
+            if(star.brightness <= 0.2){
+
+
+                star.brightness = 0.2;
 
                 star.direction = 1;
 
@@ -353,7 +373,9 @@ class Starfield {
             }
 
 
+
         });
+
 
 
 
@@ -365,6 +387,8 @@ class Starfield {
 
 
             this.constellationTimer--;
+
+
 
 
 
@@ -380,6 +404,7 @@ class Starfield {
 
 
         }
+
 
 
 
@@ -417,8 +442,6 @@ class Starfield {
 
 
 
-
-
         this.stars.forEach(star=>{
 
 
@@ -441,7 +464,7 @@ class Starfield {
 
                 0,
 
-                Math.PI * 2
+                Math.PI*2
 
             );
 
@@ -450,8 +473,8 @@ class Starfield {
             ctx.fill();
 
 
-
         });
+
 
 
 
@@ -471,8 +494,8 @@ class Starfield {
 
             ctx.strokeStyle = "white";
 
-
             ctx.lineWidth = 1;
+
 
 
 
@@ -484,29 +507,32 @@ class Starfield {
                 (star,index)=>{
 
 
-                if(index === 0){
+                    if(index === 0){
 
 
-                    ctx.moveTo(
-                        star.x,
-                        star.y
-                    );
+                        ctx.moveTo(
+                            star.x,
+                            star.y
+                        );
+
+
+                    }
+                    else{
+
+
+                        ctx.lineTo(
+                            star.x,
+                            star.y
+                        );
+
+
+                    }
+
 
 
                 }
-                else{
+            );
 
-
-                    ctx.lineTo(
-                        star.x,
-                        star.y
-                    );
-
-
-                }
-
-
-            });
 
 
 
@@ -517,7 +543,9 @@ class Starfield {
 
 
 
+
             ctx.globalAlpha = 1;
+
 
 
 
@@ -525,6 +553,7 @@ class Starfield {
 
 
                 ctx.beginPath();
+
 
 
                 ctx.arc(
@@ -542,6 +571,7 @@ class Starfield {
                 );
 
 
+
                 ctx.fill();
 
 
@@ -555,8 +585,8 @@ class Starfield {
 
 
 
-
         ctx.globalAlpha = 1;
+
 
 
     }
