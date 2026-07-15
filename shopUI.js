@@ -94,12 +94,20 @@ class ShopUI {
 
 
 
-        if(menu){
+        open(){
 
-            menu.hide();
 
-        }
+    this.visible = true;
 
+
+    this.shop.style.display =
+        "block";
+
+
+    this.refresh();
+
+
+}
 
 
         this.refresh();
