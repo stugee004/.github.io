@@ -756,7 +756,7 @@ const shopButton =
 
 
         this.menuComponents.push(abilityButton);
-
+);
 
 
 
