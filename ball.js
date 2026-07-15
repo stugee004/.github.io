@@ -6,7 +6,7 @@ class Ball {
 
         this.radius = 10;
 
-        this.speed = 7;
+        this.speed = 14;
 
 
         this.x = canvas.width / 2;
