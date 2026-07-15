@@ -28,7 +28,7 @@ window.addEventListener(
 
 
 // =====================================
-// Game State
+// Game Variables
 // =====================================
 
 
@@ -42,7 +42,6 @@ let winner = "";
 let playerScore = 0;
 
 let cpuScore = 0;
-
 
 
 let player;
@@ -84,9 +83,7 @@ window.addEventListener(
 
 
 
-        if(
-            typeof sounds !== "undefined"
-        ){
+        if(typeof sounds !== "undefined"){
 
             sounds.unlock();
 
@@ -116,35 +113,8 @@ window.addEventListener(
 // =====================================
 
 
-function createGameObjects(){
+function createBackground(){
 
-
-
-    player =
-        new Paddle(
-            40,
-            canvas.height/2-60,
-            "cyan"
-        );
-
-
-
-    cpu =
-        new CPU(
-            canvas.width-60,
-            canvas.height/2-60,
-            save.get("settings.difficulty") || "medium"
-        );
-
-
-
-    ball =
-        new Ball();
-
-
-
-
-    // Only create background once
 
     if(!stars){
 
@@ -153,11 +123,9 @@ function createGameObjects(){
     }
 
 
-
     if(!particles){
 
-        particles =
-            new ParticleSystem();
+        particles = new ParticleSystem();
 
     }
 
@@ -166,7 +134,47 @@ function createGameObjects(){
 
 
 
-createGameObjects();
+
+
+function createPlayers(){
+
+
+
+    player = new Paddle(
+
+        40,
+
+        canvas.height / 2 - 60,
+
+        "cyan"
+
+    );
+
+
+
+    cpu = new CPU(
+
+        canvas.width - 60,
+
+        canvas.height / 2 - 60,
+
+        save.get("settings.difficulty") || "medium"
+
+    );
+
+
+
+    ball = new Ball();
+
+
+}
+
+
+
+
+createBackground();
+
+createPlayers();
 
 
 
@@ -174,7 +182,7 @@ createGameObjects();
 
 
 // =====================================
-// Start Game
+// Start
 // =====================================
 
 
@@ -182,6 +190,7 @@ function startGame(){
 
 
     gameStarted = true;
+
 
     resetGame();
 
@@ -202,13 +211,11 @@ function startGame(){
 function update(){
 
 
-
     if(!gameStarted){
 
         return;
 
     }
-
 
 
 
@@ -220,7 +227,6 @@ function update(){
 
         }
 
-
         return;
 
     }
@@ -229,8 +235,7 @@ function update(){
 
 
 
-
-    // Player movement
+    // Player controls
 
 
     if(keys["ArrowUp"]){
@@ -248,38 +253,14 @@ function update(){
 
 
 
-
-
     player.update();
-
 
 
     cpu.update(ball);
 
 
 
-
     ball.update();
-
-
-
-
-
-
-    if(
-        typeof abilities !== "undefined"
-    ){
-
-        abilities.applyPlayerEffects(player);
-
-        abilities.applyBallEffects(ball);
-
-        abilities.update();
-
-    }
-
-
-
 
 
 
@@ -291,10 +272,17 @@ function update(){
 
 
 
+    if(typeof abilities !== "undefined"){
+
+        abilities.update();
+
+    }
 
 
 
-    // Player scores
+
+
+    // CPU scores
 
 
     if(ball.x < 0){
@@ -310,7 +298,6 @@ function update(){
         }
 
 
-
         resetRound();
 
 
@@ -320,8 +307,7 @@ function update(){
 
 
 
-
-    // CPU scores
+    // Player scores
 
 
     if(ball.x > canvas.width){
@@ -337,7 +323,6 @@ function update(){
         }
 
 
-
         resetRound();
 
 
@@ -347,8 +332,9 @@ function update(){
 
 
 
-
     checkVictory();
+
+
 
 
 
@@ -388,10 +374,15 @@ function draw(){
 
 
     ctx.fillRect(
+
         0,
+
         0,
+
         canvas.width,
+
         canvas.height
+
     );
 
 
@@ -407,29 +398,35 @@ function draw(){
 
 
 
+    // Center line
 
 
-    // Middle line
+    ctx.strokeStyle = "white";
 
+    ctx.globalAlpha = 0.3;
 
-    ctx.strokeStyle="white";
-
-    ctx.globalAlpha=.3;
 
     ctx.setLineDash([10,10]);
 
 
     ctx.beginPath();
 
+
     ctx.moveTo(
+
         canvas.width/2,
+
         0
+
     );
 
 
     ctx.lineTo(
+
         canvas.width/2,
+
         canvas.height
+
     );
 
 
@@ -438,8 +435,8 @@ function draw(){
 
     ctx.setLineDash([]);
 
-    ctx.globalAlpha=1;
 
+    ctx.globalAlpha = 1;
 
 
 
@@ -452,13 +449,11 @@ function draw(){
     }
 
 
-
     if(cpu){
 
         cpu.draw(ctx);
 
     }
-
 
 
     if(ball){
@@ -468,13 +463,11 @@ function draw(){
     }
 
 
-
     if(particles){
 
         particles.draw(ctx);
 
     }
-
 
 
 
@@ -500,40 +493,53 @@ function draw(){
 
 
 // =====================================
-// Score Display
+// Score
 // =====================================
 
 
 function drawScore(){
 
 
+
     ctx.save();
 
 
-    ctx.fillStyle="white";
+    ctx.fillStyle = "white";
 
-    ctx.font="50px Arial";
 
-    ctx.textAlign="center";
+    ctx.font = "50px Arial";
+
+
+    ctx.textAlign = "center";
 
 
 
     ctx.fillText(
+
         playerScore,
-        canvas.width/2-80,
+
+        canvas.width/2 - 80,
+
         70
+
     );
 
 
+
     ctx.fillText(
+
         cpuScore,
-        canvas.width/2+80,
+
+        canvas.width/2 + 80,
+
         70
+
     );
 
 
 
     ctx.restore();
+
 
 
 }
@@ -578,14 +584,24 @@ function checkVictory(){
 
 
 
-
 function endGame(text){
 
 
-    gameOver=true;
+
+    gameOver = true;
 
 
-    winner=text;
+    winner = text;
+
+
+
+    if(
+        typeof sounds !== "undefined"
+    ){
+
+        sounds.victory();
+
+    }
 
 
 
@@ -600,13 +616,6 @@ function endGame(text){
 
 
 
-    if(typeof sounds !== "undefined"){
-
-        sounds.victory();
-
-    }
-
-
 }
 
 
@@ -619,15 +628,20 @@ function drawVictory(){
 
 
 
-    ctx.fillStyle=
+    ctx.fillStyle =
         "rgba(0,0,0,.6)";
 
 
     ctx.fillRect(
+
         0,
+
         0,
+
         canvas.width,
+
         canvas.height
+
     );
 
 
@@ -637,14 +651,19 @@ function drawVictory(){
 
     ctx.font="70px Arial";
 
+
     ctx.textAlign="center";
 
 
 
     ctx.fillText(
+
         winner,
+
         canvas.width/2,
+
         canvas.height/2
+
     );
 
 
@@ -653,10 +672,15 @@ function drawVictory(){
 
 
     ctx.fillText(
+
         "Press R to restart",
+
         canvas.width/2,
-        canvas.height/2+60
+
+        canvas.height/2 + 60
+
     );
+
 
 
 }
@@ -683,41 +707,24 @@ function resetRound(){
 
 
 
+
+
 function resetGame(){
 
 
 
-    playerScore=0;
+    playerScore = 0;
 
-    cpuScore=0;
-
-
-    gameOver=false;
-
-    winner="";
+    cpuScore = 0;
 
 
+    gameOver = false;
 
-    player =
-        new Paddle(
-            40,
-            canvas.height/2-60,
-            "cyan"
-        );
+    winner = "";
 
 
 
-    cpu =
-        new CPU(
-            canvas.width-60,
-            canvas.height/2-60,
-            save.get("settings.difficulty") || "medium"
-        );
-
-
-
-    ball =
-        new Ball();
+    createPlayers();
 
 
 }
@@ -739,6 +746,7 @@ function gameLoop(){
     update();
 
     draw();
+
 
 
     requestAnimationFrame(
