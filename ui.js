@@ -877,7 +877,11 @@ class UIManager{
 
 
 
-        Mouse.update();
+        this.updateNotifications();
+
+this.updateTransition();
+
+Mouse.update();
 
     }
 
@@ -923,6 +927,12 @@ class UIManager{
             case "shop":
 
     this.drawShopScreen();
+
+    this.drawNotifications();
+
+this.drawPause();
+
+this.drawTransition();
 
     break;
 
@@ -2046,3 +2056,478 @@ UI.drawVersion = function(){
     ctx.restore();
 
 };
+/*==================================================
+    ui.js
+    Part 5
+    Notifications
+    Fade Transitions
+    Pause Overlay
+==================================================*/
+
+
+
+UI.notifications = [];
+
+
+
+UI.transition = {
+
+    alpha:0,
+
+    target:0,
+
+    speed:0.06
+
+};
+
+
+
+UI.paused = false;
+
+
+
+
+
+UI.notify = function(
+
+    text,
+
+    color="cyan"
+
+){
+
+    this.notifications.push({
+
+        text,
+
+        color,
+
+        life:240,
+
+        y:40
+
+    });
+
+};
+
+
+
+
+
+
+
+
+
+UI.updateNotifications = function(){
+
+    this.notifications.forEach(n=>{
+
+        n.life--;
+
+        n.y += 0.15;
+
+    });
+
+
+
+    this.notifications =
+
+        this.notifications.filter(
+
+            n=>n.life>0
+
+        );
+
+};
+
+
+
+
+
+
+
+
+
+UI.drawNotifications = function(){
+
+    ctx.save();
+
+
+
+    ctx.textAlign="center";
+
+
+
+    this.notifications.forEach((n,i)=>{
+
+        ctx.globalAlpha=
+
+            Math.min(
+
+                1,
+
+                n.life/60
+
+            );
+
+
+
+        ctx.fillStyle=
+
+            "rgba(15,25,45,.92)";
+
+
+
+        ctx.strokeStyle=
+
+            n.color;
+
+
+
+        ctx.lineWidth=2;
+
+
+
+        ctx.beginPath();
+
+
+
+        ctx.roundRect(
+
+            canvas.width/2-170,
+
+            n.y+i*60,
+
+            340,
+
+            42,
+
+            12
+
+        );
+
+
+
+        ctx.fill();
+
+        ctx.stroke();
+
+
+
+        ctx.fillStyle="white";
+
+
+
+        ctx.font="20px Arial";
+
+
+
+        ctx.fillText(
+
+            n.text,
+
+            canvas.width/2,
+
+            n.y+27+i*60
+
+        );
+
+    });
+
+
+
+    ctx.restore();
+
+};
+
+
+
+
+
+
+
+
+
+UI.fadeToBlack=function(){
+
+    this.transition.target=1;
+
+};
+
+
+
+
+
+UI.fadeIn=function(){
+
+    this.transition.target=0;
+
+};
+
+
+
+
+
+
+
+
+
+UI.updateTransition=function(){
+
+    this.transition.alpha=
+
+        Animation.lerp(
+
+            this.transition.alpha,
+
+            this.transition.target,
+
+            this.transition.speed
+
+        );
+
+};
+
+
+
+
+
+
+
+
+
+UI.drawTransition=function(){
+
+    if(this.transition.alpha<0.01)
+
+        return;
+
+
+
+    ctx.save();
+
+
+
+    ctx.globalAlpha=
+
+        this.transition.alpha;
+
+
+
+    ctx.fillStyle="black";
+
+
+
+    ctx.fillRect(
+
+        0,
+
+        0,
+
+        canvas.width,
+
+        canvas.height
+
+    );
+
+
+
+    ctx.restore();
+
+};
+
+
+
+
+
+
+
+
+
+UI.drawPause=function(){
+
+    if(!this.paused)
+
+        return;
+
+
+
+    ctx.save();
+
+
+
+    ctx.fillStyle=
+
+        "rgba(0,0,0,.65)";
+
+
+
+    ctx.fillRect(
+
+        0,
+
+        0,
+
+        canvas.width,
+
+        canvas.height
+
+    );
+
+
+
+    ctx.textAlign="center";
+
+
+
+    ctx.fillStyle="white";
+
+
+
+    ctx.shadowBlur=30;
+
+    ctx.shadowColor="cyan";
+
+
+
+    ctx.font="bold 70px Arial";
+
+
+
+    ctx.fillText(
+
+        "PAUSED",
+
+        canvas.width/2,
+
+        canvas.height/2-20
+
+    );
+
+
+
+    ctx.font="22px Arial";
+
+
+
+    ctx.fillText(
+
+        "Press ESC to Resume",
+
+        canvas.width/2,
+
+        canvas.height/2+40
+
+    );
+
+
+
+    ctx.restore();
+
+};
+
+
+
+
+
+
+
+
+
+window.addEventListener(
+
+    "keydown",
+
+    e=>{
+
+        if(e.key==="Escape"){
+
+            UI.paused=!UI.paused;
+
+
+
+            if(typeof State!=="undefined"){
+
+                if(UI.paused){
+
+                    State.pause();
+
+                }
+
+                else{
+
+                    State.resume();
+
+                }
+
+            }
+
+        }
+
+    }
+
+);
+
+
+
+
+
+
+
+
+
+State.onChange((current)=>{
+
+    UI.fadeToBlack();
+
+
+
+    setTimeout(()=>{
+
+        UI.fadeIn();
+
+    },180);
+
+
+
+
+
+    switch(current){
+
+        case "shop":
+
+            UI.notify(
+
+                "Opened Shop"
+
+            );
+
+            break;
+
+
+
+        case "abilities":
+
+            UI.notify(
+
+                "Opened Abilities"
+
+            );
+
+            break;
+
+
+
+        case "playing":
+
+            UI.notify(
+
+                "Good Luck!"
+
+            );
+
+            break;
+
+    }
+
+});
