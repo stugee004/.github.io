@@ -118,7 +118,17 @@ class ShopUI {
 
         if(typeof State !== "undefined"){
 
-            State.openMenu();
+            if(typeof shopUI !== "undefined"){
+    shopUI.close();
+}
+
+if(typeof abilitiesUI !== "undefined"){
+    abilitiesUI.close();
+}
+
+if(typeof State !== "undefined"){
+    State.openMenu();
+}
 
         }
 
