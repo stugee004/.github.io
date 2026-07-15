@@ -942,9 +942,7 @@ this.updateScreens();
 
 
 
-            case "shop":
-
-    this.drawShopScreen();
+     case "shop":
 
     this.drawNotifications();
 
@@ -952,15 +950,11 @@ this.updateScreens();
 
     this.drawTransition();
 
-    this.drawScreens();
-
     break;
 
 
 
-            case "abilities":
-
-    this.drawAbilitiesScreen();
+case "abilities":
 
     break;
 
@@ -1328,7 +1322,6 @@ UI.buildShop = function(){
     });
 
 };
-
 
 
 
