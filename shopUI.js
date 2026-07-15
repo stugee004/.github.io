@@ -7,10 +7,7 @@ class ShopUI {
 
         this.create();
 
-
     }
-
-
 
 
 
@@ -19,30 +16,26 @@ class ShopUI {
     create(){
 
 
-        const shop =
+        const shopElement =
             document.createElement("div");
 
 
-        shop.id = "shopUI";
+        shopElement.id = "shopUI";
 
 
-        shop.style.display = "none";
+        shopElement.style.display = "none";
 
 
 
-        shop.innerHTML = `
+        shopElement.innerHTML = `
 
             <h2>SHOP</h2>
-
 
             <div id="shopBalance">
                 Cenes: 0
             </div>
 
-
             <div id="shopItems"></div>
-
-
 
             <button id="closeShop">
                 Back
@@ -52,45 +45,38 @@ class ShopUI {
 
 
 
-        document.body.appendChild(shop);
+        document.body.appendChild(shopElement);
 
 
 
-        this.shop = shop;
+        this.shopElement = shopElement;
 
 
 
         document
-        .getElementById(
-            "closeShop"
-        )
-        .onclick = ()=>{
+            .getElementById("closeShop")
+            .onclick = () => {
 
+                this.close();
 
-            this.close();
-
-
-        };
+            };
 
 
     }
 
 
 
-        open(){
 
 
-    this.visible = true;
 
 
-    this.shop.style.display =
-        "block";
+    open(){
 
 
-    this.refresh();
+        this.visible = true;
 
 
-}
+        this.shopElement.style.display = "block";
 
 
         this.refresh();
@@ -104,24 +90,20 @@ class ShopUI {
 
 
 
-
     close(){
 
 
         this.visible = false;
 
 
-        this.shop.style.display =
-            "none";
+        this.shopElement.style.display = "none";
 
 
-
-        if(menu){
+        if(typeof menu !== "undefined"){
 
             menu.show();
 
         }
-
 
 
     }
@@ -132,57 +114,25 @@ class ShopUI {
 
 
 
-
-
     refresh(){
-
-
-
-        let balance = 0;
-
 
 
         if(typeof economy !== "undefined"){
 
-
-            balance =
-                economy.cenes;
-
+            document
+                .getElementById("shopBalance")
+                .innerText =
+                "Cenes: " + economy.cenes;
 
         }
 
 
 
-
-
-
-        document
-        .getElementById(
-            "shopBalance"
-        )
-        .innerText =
-
-            "Cenes: "
-            +
-            balance;
-
-
-
-
-
-
-
         const container =
-            document.getElementById(
-                "shopItems"
-            );
-
+            document.getElementById("shopItems");
 
 
         container.innerHTML = "";
-
-
-
 
 
 
@@ -195,14 +145,7 @@ class ShopUI {
 
 
 
-
-
-
-
-        Object.keys(
-            shop.items
-        )
-        .forEach(key=>{
+        Object.keys(shop.items).forEach(key=>{
 
 
             const item =
@@ -211,44 +154,26 @@ class ShopUI {
 
 
             const button =
-                document.createElement(
-                    "button"
-                );
+                document.createElement("button");
 
 
 
             button.innerText =
-
-                item.name
-                +
-                " - "
-                +
-                item.cost
-                +
+                item.name +
+                " - " +
+                item.cost +
                 " Cenes";
-
-
-
-
 
 
 
             if(item.owned){
 
-
                 button.innerText +=
                     " ✓ Owned";
 
-
-                button.disabled =
-                    true;
-
+                button.disabled = true;
 
             }
-
-
-
-
 
 
 
@@ -261,28 +186,20 @@ class ShopUI {
                 this.refresh();
 
 
-
             };
 
 
 
-            container.appendChild(
-                button
-            );
-
+            container.appendChild(button);
 
 
         });
 
 
-
     }
 
 
-
 }
-
-
 
 
 
