@@ -1,4 +1,4 @@
-class AbilityManager {
+class Abilities {
 
 
     constructor(){
@@ -9,212 +9,177 @@ class AbilityManager {
 
             speedBoost: {
 
-                name:"Speed Boost",
+                name: "Speed Boost",
 
                 description:
-                    "Increase paddle speed",
+                    "Makes the paddle move faster",
 
-                cost:100,
+                cost: 300,
 
-                duration:600
+                unlocked: false
 
             },
 
 
-            shield: {
 
-                name:"Energy Shield",
+            bigPaddle: {
+
+                name: "Big Paddle",
 
                 description:
-                    "Creates a temporary paddle shield",
+                    "Increases paddle size",
 
-                cost:250,
+                cost: 500,
 
-                duration:500
+                unlocked: false
 
             },
 
 
-            gravity: {
 
-                name:"Gravity Field",
+            ballControl: {
 
-                description:
-                    "Slightly bends the ball",
-
-                cost:400,
-
-                duration:300
-
-            },
-
-
-            overdrive: {
-
-                name:"Ball Overdrive",
+                name: "Ball Control",
 
                 description:
-                    "Increase ball speed",
+                    "Improves ball control",
 
-                cost:500,
+                cost: 700,
 
-                duration:300
+                unlocked: false
 
             }
 
 
+
         };
 
-
-
-        this.active = {};
 
 
         this.load();
 
 
+
     }
 
 
 
 
 
-    unlock(id){
+
+
+
+
+    unlock(name){
 
 
 
         const ability =
-            this.abilities[id];
+            this.abilities[name];
 
 
 
         if(!ability){
 
-            return false;
+            console.log(
+                "Ability not found"
+            );
+
+            return;
 
         }
 
 
 
-        if(this.isUnlocked(id)){
 
-            return false;
+
+
+
+        if(ability.unlocked){
+
+
+            console.log(
+                "Already unlocked"
+            );
+
+
+            return;
 
         }
+
+
+
+
 
 
 
         if(
-            economy &&
-            economy.spendCenes(
-                ability.cost
-            )
+            typeof economy === "undefined"
+        ){
+
+            return;
+
+        }
+
+
+
+
+
+
+
+        if(
+            economy.cenes >= ability.cost
         ){
 
 
-            save.data.abilities.push(id);
+
+            economy.cenes -=
+                ability.cost;
 
 
-            save.save();
 
-
-            return true;
-
-
-        }
-
-
-        return false;
-
-
-    }
+            ability.unlocked = true;
 
 
 
 
 
-    isUnlocked(id){
-
-
-        return save.data.abilities.includes(id);
-
-
-    }
-
-
-
-
-
-    activate(id){
-
-
-        if(!this.isUnlocked(id)){
-
-            return false;
-
-        }
-
-
-
-        const ability =
-            this.abilities[id];
-
-
-
-        this.active[id] =
-        {
-
-            timer:
-            ability.duration
-
-        };
-
-
-
-        if(typeof playAbility === "function"){
 
             if(typeof sounds !== "undefined"){
-    sounds.ability();
-}
-
-        }
 
 
-
-        return true;
-
-
-    }
-
-
-
-
-
-
-
-    update(){
-
-
-
-        for(let id in this.active){
-
-
-
-            this.active[id].timer--;
-
-
-
-            if(
-                this.active[id].timer <= 0
-            ){
-
-
-                delete this.active[id];
+                sounds.ability();
 
 
             }
 
 
+
+
+
+
+            this.save();
+
+
+
+            console.log(
+
+                ability.name +
+                " unlocked!"
+
+            );
+
+
+
+        }
+        else{
+
+
+            console.log(
+                "Not enough Cenes"
+            );
+
+
         }
 
 
@@ -222,16 +187,6 @@ class AbilityManager {
     }
 
 
-
-
-
-    hasActive(id){
-
-
-        return this.active[id] !== undefined;
-
-
-    }
 
 
 
@@ -244,27 +199,57 @@ class AbilityManager {
 
 
         if(
-            this.hasActive(
-                "speedBoost"
-            )
+            !player
+        ){
+
+            return;
+
+        }
+
+
+
+
+
+
+        if(
+            this.abilities.speedBoost.unlocked
         ){
 
 
-            player.speed = 14;
+
+            player.speed =
+                8;
+
+
+
+        }
+
+
+
+
+
+
+
+        if(
+            this.abilities.bigPaddle.unlocked
+        ){
+
+
+
+            player.height =
+                150;
+
 
 
         }
 
-        else{
 
 
-            player.speed = 8;
-
-
-        }
 
 
     }
+
+
 
 
 
@@ -277,14 +262,10 @@ class AbilityManager {
 
 
         if(
-            this.hasActive(
-                "overdrive"
-            )
+            !ball
         ){
 
-
-            ball.speed += 0.01;
-
+            return;
 
         }
 
@@ -293,21 +274,21 @@ class AbilityManager {
 
 
         if(
-            this.hasActive(
-                "gravity"
-            )
+            this.abilities.ballControl.unlocked
         ){
 
 
-            ball.dy +=
-                Math.sin(
-                    Date.now()/200
-                )
-                *
-                0.02;
+
+            ball.speed =
+                Math.min(
+                    ball.speed,
+                    10
+                );
+
 
 
         }
+
 
 
     }
@@ -317,21 +298,110 @@ class AbilityManager {
 
 
 
+
+
+
+    update(){
+
+
+
+        // Reserved for future abilities
+
+        // cooldowns, temporary effects, etc.
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+    getUnlocked(){
+
+
+
+        return Object.values(
+
+            this.abilities
+
+        )
+        .filter(
+
+            ability=>ability.unlocked
+
+        );
+
+
+    }
+
+
+
+
+
+
+
+
+
     load(){
 
 
-        if(
-            !save.data.abilities
-        ){
+
+        const saved =
+            localStorage.getItem(
+                "abilitiesData"
+            );
 
 
-            save.data.abilities=[];
+
+        if(saved){
 
 
-            save.save();
+            const data =
+                JSON.parse(saved);
+
+
+
+            Object.assign(
+
+                this.abilities,
+
+                data
+
+            );
 
 
         }
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+    save(){
+
+
+
+        localStorage.setItem(
+
+            "abilitiesData",
+
+            JSON.stringify(
+                this.abilities
+            )
+
+        );
 
 
     }
@@ -344,7 +414,6 @@ class AbilityManager {
 
 
 
-// Global ability system
 
 const abilities =
-    new AbilityManager();
+    new Abilities();
