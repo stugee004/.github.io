@@ -77,23 +77,6 @@ class ShopUI {
 
 
 
-
-
-
-
-
-
-    open(){
-
-
-        this.visible = true;
-
-
-        this.shop.style.display =
-            "block";
-
-
-
         open(){
 
 
