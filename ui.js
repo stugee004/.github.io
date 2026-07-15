@@ -723,39 +723,41 @@ const shopButton =
 
 
 
-        const abilityButton =
-            new UIButton(
+const abilitiesButton =
+    new UIButton(
 
-                canvas.width/2-140,
+        canvas.width/2-140,
 
-                400,
+        380,
 
-                280,
+        280,
 
-                60,
+        60,
 
-                "⚡ ABILITIES",
+        "✨ ABILITIES",
 
-()=>{
+        ()=>{
 
-    if(typeof State !== "undefined"){
+            if(typeof State !== "undefined"){
 
-        State.openAbilities();
+                State.openAbilities();
 
-    }
-
-
-    if(typeof abilitiesUI !== "undefined"){
-
-        abilitiesUI.open();
-
-    }
-
-}
+            }
 
 
+            if(typeof abilitiesUI !== "undefined"){
 
-        this.menuComponents.push(abilityButton);
+                abilitiesUI.open();
+
+            }
+
+        }
+
+    );
+
+
+this.menuComponents.push(
+    abilitiesButton
 );
 
 
