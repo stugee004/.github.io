@@ -944,8 +944,6 @@ this.updateScreens();
 
      case "shop":
 
-    this.drawNotifications();
-
     this.drawPause();
 
     this.drawTransition();
@@ -960,6 +958,8 @@ case "abilities":
 
         }
         this.drawVersion();
+
+        this.drawNotifications();
     }
 
 
