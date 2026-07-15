@@ -916,7 +916,7 @@ this.updateScreens();
 
         }
 
-        this.drawMenuBackground();
+        //this.drawMenuBackground();
 
         switch(State.current){
 
