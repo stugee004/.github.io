@@ -64,8 +64,9 @@ let cpuScore = 0;
 
 let winner = "";
 
+let roundDelay = 0;
 
-
+let roundMessage = "";
 
 // =====================================
 // Input
@@ -211,6 +212,10 @@ function resetRound(){
 
     ball.reset();
 
+    roundDelay = 120; // about 2 seconds at 60fps
+
+    roundMessage = "GET READY";
+
 }
 
 
@@ -302,7 +307,13 @@ function update(){
         return;
 
     }
+    if(roundDelay > 0){
 
+    roundDelay--;
+
+    return;
+
+}
 
 
     // -------------------------
