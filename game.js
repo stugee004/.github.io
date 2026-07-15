@@ -219,11 +219,11 @@ function resetRound(){
 
 function resetGame(){
 
-    playerScore = 0;
+    playerScore=0;
 
-    cpuScore = 0;
+    cpuScore=0;
 
-    winner = "";
+    winner="";
 
 
 
@@ -385,7 +385,204 @@ function update(){
 
 
 
-    function checkVictory(){
+    checkVictory();
+
+}
+// =====================================
+// Draw
+// =====================================
+
+
+function draw(){
+
+
+
+    ctx.fillStyle = "black";
+
+
+    ctx.fillRect(
+
+        0,
+
+        0,
+
+        canvas.width,
+
+        canvas.height
+
+    );
+
+
+
+
+
+    if(stars){
+
+        stars.draw(ctx);
+
+    }
+
+
+
+
+    // Center line
+
+
+    ctx.strokeStyle = "white";
+
+    ctx.globalAlpha = 0.3;
+
+
+    ctx.setLineDash([10,10]);
+
+
+    ctx.beginPath();
+
+
+    ctx.moveTo(
+
+        canvas.width/2,
+
+        0
+
+    );
+
+
+    ctx.lineTo(
+
+        canvas.width/2,
+
+        canvas.height
+
+    );
+
+
+    ctx.stroke();
+
+
+    ctx.setLineDash([]);
+
+
+    ctx.globalAlpha = 1;
+
+
+
+
+
+    if(player){
+
+        player.draw(ctx);
+
+    }
+
+
+    if(cpu){
+
+        cpu.draw(ctx);
+
+    }
+
+
+    if(ball){
+
+        ball.draw(ctx);
+
+    }
+
+
+    if(particles){
+
+        particles.draw(ctx);
+
+    }
+
+    UI.draw();
+
+    drawScore();
+
+
+
+
+    if(gameOver){
+
+        drawVictory();
+
+    }
+
+
+
+}
+
+
+
+
+
+
+
+// =====================================
+// Score
+// =====================================
+
+
+function drawScore(){
+
+
+
+    ctx.save();
+
+
+    ctx.fillStyle = "white";
+
+
+    ctx.font = "50px Arial";
+
+
+    ctx.textAlign = "center";
+
+
+
+    ctx.fillText(
+
+        playerScore,
+
+        canvas.width/2 - 80,
+
+        70
+
+    );
+
+
+
+    ctx.fillText(
+
+        cpuScore,
+
+        canvas.width/2 + 80,
+
+        70
+
+    );
+
+
+
+    ctx.restore();
+
+
+
+}
+
+
+
+
+
+
+
+// =====================================
+// Victory
+// =====================================
+
+
+function checkVictory(){
 
     if(playerScore >= 5){
 
@@ -425,4 +622,144 @@ function update(){
 
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+function drawVictory(){
+
+
+
+    ctx.fillStyle =
+        "rgba(0,0,0,.6)";
+
+
+    ctx.fillRect(
+
+        0,
+
+        0,
+
+        canvas.width,
+
+        canvas.height
+
+    );
+
+
+
+    ctx.fillStyle="white";
+
+
+    ctx.font="70px Arial";
+
+
+    ctx.textAlign="center";
+
+
+
+    ctx.fillText(
+
+        winner,
+
+        canvas.width/2,
+
+        canvas.height/2
+
+    );
+
+
+
+    ctx.font="30px Arial";
+
+
+    ctx.fillText(
+
+        "Press R to restart",
+
+        canvas.width/2,
+
+        canvas.height/2 + 60
+
+    );
+
+
+
 }
+
+
+
+
+
+
+
+// =====================================
+// Reset
+// =====================================
+
+
+function resetRound(){
+
+
+    ball.reset();
+
+
+}
+
+
+
+
+
+
+function resetGame(){
+
+    playerScore = 0;
+
+    cpuScore = 0;
+
+    winner = "";
+
+
+
+    createObjects();
+
+}
+
+
+
+
+
+
+
+// =====================================
+// Loop
+// =====================================
+
+
+function gameLoop(){
+
+
+    update();
+
+    draw();
+
+
+
+    requestAnimationFrame(
+        gameLoop
+    );
+
+
+}
+
+
+
+gameLoop();
