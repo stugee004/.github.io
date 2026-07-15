@@ -24,6 +24,8 @@ window.addEventListener(
     resizeCanvas
 );
 
+UI.initialize();
+
 
 
 
@@ -210,7 +212,7 @@ function startGame(){
 
 function update(){
 
-
+    UI.update();
     if(!gameStarted){
 
         return;
@@ -469,7 +471,7 @@ function draw(){
 
     }
 
-
+    UI.draw();
 
     drawScore();
 
