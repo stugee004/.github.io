@@ -35,7 +35,7 @@ class CPU extends Paddle {
 
         if(this.difficulty === "easy"){
 
-            this.speed = 4;
+            this.speed = 2;
 
             this.reactionDelay = 30;
 
@@ -46,7 +46,7 @@ class CPU extends Paddle {
 
         if(this.difficulty === "medium"){
 
-            this.speed = 6;
+            this.speed = 3;
 
             this.reactionDelay = 15;
 
@@ -57,7 +57,7 @@ class CPU extends Paddle {
 
         if(this.difficulty === "hard"){
 
-            this.speed = 8;
+            this.speed = 4;
 
             this.reactionDelay = 5;
 
@@ -68,7 +68,7 @@ class CPU extends Paddle {
 
         if(this.difficulty === "impossible"){
 
-            this.speed = 10;
+            this.speed = 5;
 
             this.reactionDelay = 0;
 
