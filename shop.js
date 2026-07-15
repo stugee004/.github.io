@@ -7,128 +7,56 @@ class Shop {
         this.items = {
 
 
-            // Abilities
+            galaxyPaddle: {
 
-            speedBoost: {
+                name: "Galaxy Paddle",
 
-                name:"Speed Boost",
+                description:
+                    "A cosmic glowing paddle",
 
-                type:"ability",
+                cost: 600,
 
-                cost:100
-
-            },
-
-
-            shield: {
-
-                name:"Energy Shield",
-
-                type:"ability",
-
-                cost:250
+                owned: false
 
             },
 
-
-            gravity: {
-
-                name:"Gravity Field",
-
-                type:"ability",
-
-                cost:400
-
-            },
-
-
-            overdrive: {
-
-                name:"Ball Overdrive",
-
-                type:"ability",
-
-                cost:500
-
-            },
-
-
-
-
-            // Paddle cosmetics
-
-
-            neonBlue: {
-
-                name:"Neon Blue Paddle",
-
-                type:"paddle",
-
-                color:"cyan",
-
-                cost:200
-
-            },
-
-
-            plasmaRed: {
-
-                name:"Plasma Red Paddle",
-
-                type:"paddle",
-
-                color:"red",
-
-                cost:300
-
-            },
-
-
-            galaxy: {
-
-                name:"Galaxy Paddle",
-
-                type:"paddle",
-
-                color:"purple",
-
-                cost:600
-
-            },
-
-
-
-
-            // Ball cosmetics
 
 
             goldenBall: {
 
-                name:"Golden Ball",
+                name: "Golden Ball",
 
-                type:"ball",
+                description:
+                    "A legendary golden ball",
 
-                color:"gold",
+                cost: 400,
 
-                cost:400
+                owned: false
 
             },
 
 
-            starBall: {
 
-                name:"Star Ball",
+            starTrail: {
 
-                type:"ball",
+                name: "Star Trail",
 
-                color:"white",
+                description:
+                    "Leaves a trail of stars",
 
-                cost:700
+                cost: 300,
+
+                owned: false
 
             }
 
 
+
         };
+
+
+
+        this.load();
 
 
     }
@@ -138,11 +66,15 @@ class Shop {
 
 
 
-    buy(id){
+
+
+
+    buy(itemName){
+
 
 
         const item =
-            this.items[id];
+            this.items[itemName];
 
 
 
@@ -152,7 +84,7 @@ class Shop {
                 "Item does not exist"
             );
 
-            return false;
+            return;
 
         }
 
@@ -160,10 +92,17 @@ class Shop {
 
 
 
-        if(this.owned(id)){
 
 
-            return false;
+        if(item.owned){
+
+
+            console.log(
+                "Already owned"
+            );
+
+
+            return;
 
 
         }
@@ -171,39 +110,192 @@ class Shop {
 
 
 
+
+
+
+        let balance = 0;
+
+
+
+        if(typeof economy !== "undefined"){
+
+
+            balance =
+                economy.cenes;
+
+
+        }
+
+
+
+
+
+
+
+        if(balance >= item.cost){
+
+
+
+            economy.cenes -= item.cost;
+
+
+
+            item.owned = true;
+
+
+
+
+            if(typeof sounds !== "undefined"){
+
+
+                sounds.coin();
+
+
+            }
+
+
+
+
+
+
+            this.save();
+
+
+
+            console.log(
+                item.name +
+                " purchased!"
+            );
+
+
+
+        }
+        else{
+
+
+            console.log(
+                "Not enough Cenes"
+            );
+
+
+        }
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+    equip(itemName){
+
+
+
+        const item =
+            this.items[itemName];
 
 
 
         if(
-            economy.spendCenes(
-                item.cost
+            !item ||
+            !item.owned
+        ){
+
+            return;
+
+        }
+
+
+
+
+
+        if(typeof sounds !== "undefined"){
+
+
+            sounds.ability();
+
+
+        }
+
+
+
+
+
+        console.log(
+            item.name +
+            " equipped"
+        );
+
+
+
+        this.save();
+
+
+    }
+
+
+
+
+
+
+
+
+
+    load(){
+
+
+        const saved =
+            localStorage.getItem(
+                "shopData"
+            );
+
+
+
+        if(saved){
+
+
+            const data =
+                JSON.parse(saved);
+
+
+
+            Object.assign(
+                this.items,
+                data
+            );
+
+
+        }
+
+
+
+    }
+
+
+
+
+
+
+
+
+    save(){
+
+
+
+        localStorage.setItem(
+
+            "shopData",
+
+            JSON.stringify(
+                this.items
             )
-        ){
 
-
-
-            this.addOwnership(id);
-
-
-
-            if(typeof playCoin === "function"){
-
-                if(typeof sounds !== "undefined"){
-    sounds.coin();
-}
-
-            }
-
-
-
-            return true;
-
-
-        }
-
-
-
-        return false;
+        );
 
 
     }
@@ -212,157 +304,14 @@ class Shop {
 
 
 
+    getOwned(){
 
 
-    addOwnership(id){
-
-
-
-        const item =
-            this.items[id];
-
-
-
-        if(
-            item.type === "ability"
-        ){
-
-
-            if(
-                !save.data.abilities.includes(id)
-            ){
-
-
-                save.data.abilities.push(id);
-
-
-            }
-
-
-        }
-
-
-
-
-
-        if(
-            item.type === "paddle"
-        ){
-
-
-            save.data.cosmetics.paddles.push(
-                id
-            );
-
-
-        }
-
-
-
-
-
-        if(
-            item.type === "ball"
-        ){
-
-
-            save.data.cosmetics.balls.push(
-                id
-            );
-
-
-        }
-
-
-
-        save.save();
-
-
-
-    }
-
-
-
-
-
-
-
-    owned(id){
-
-
-        const item =
-            this.items[id];
-
-
-
-        if(
-            item.type === "ability"
-        ){
-
-
-            return save.data.abilities.includes(id);
-
-
-        }
-
-
-
-        if(
-            item.type === "paddle"
-        ){
-
-
-            return save.data.cosmetics.paddles.includes(id);
-
-
-        }
-
-
-
-
-
-        if(
-            item.type === "ball"
-        ){
-
-
-            return save.data.cosmetics.balls.includes(id);
-
-
-        }
-
-
-
-        return false;
-
-
-    }
-
-
-
-
-
-
-
-    getItem(id){
-
-
-        return this.items[id];
-
-
-    }
-
-
-
-
-
-
-
-    listItems(){
-
-
-        return Object.keys(
+        return Object.values(
             this.items
+        )
+        .filter(
+            item=>item.owned
         );
 
 
@@ -376,8 +325,6 @@ class Shop {
 
 
 
-
-// Global shop
 
 const shop =
     new Shop();
