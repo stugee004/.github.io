@@ -503,11 +503,14 @@ function draw(){
 
 
 
-    if(gameOver){
+ if(
+    State.isVictory() ||
+    State.isGameOver()
+){
 
-        drawVictory();
+    drawVictory();
 
-    }
+}
 
 
 
