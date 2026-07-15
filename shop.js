@@ -3,6 +3,23 @@ class Shop {
 
     constructor(){
 
+        load(){
+
+    if(typeof save === "undefined"){
+        return;
+    }
+
+
+    Object.keys(this.items).forEach(key=>{
+
+        this.items[key].owned =
+            save.get(
+                "shop." + key
+            ) || false;
+
+    });
+
+}
 
         this.items = {
 
