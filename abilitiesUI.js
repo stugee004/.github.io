@@ -94,33 +94,20 @@ class AbilitiesUI {
 
 
 
-    close(){
+   close(){
 
-        this.visible = false;
+    this.visible = false;
 
-
-        this.element.style.display =
-            "none";
+    this.element.style.display = "none";
 
 
+    if(typeof State !== "undefined"){
 
-        if(typeof State !== "undefined"){
-
-            if(typeof shopUI !== "undefined"){
-    shopUI.close();
-}
-
-if(typeof abilitiesUI !== "undefined"){
-    abilitiesUI.close();
-}
-
-if(typeof State !== "undefined"){
-    State.openMenu();
-}
-
-        }
+        State.openMenu();
 
     }
+
+}
 
 
 
