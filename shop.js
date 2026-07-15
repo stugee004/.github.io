@@ -188,7 +188,9 @@ class Shop {
 
             if(typeof playCoin === "function"){
 
-                playCoin();
+                if(typeof sounds !== "undefined"){
+    sounds.coin();
+}
 
             }
 
