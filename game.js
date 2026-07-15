@@ -320,6 +320,8 @@ function update(){
 
         serving = false;
 
+        serveTimer = 0;
+
 
         ball.reset();
 
@@ -748,11 +750,15 @@ function resetRound(){
 
     ball.reset();
 
-    roundTimer = 120; // 2 seconds at 60fps
+    serving = true;
+
+    serveTimer = 120;
+
+    // freeze ball
+    ball.dx = 0;
+    ball.dy = 0;
 
 }
-
-
 
 
 
