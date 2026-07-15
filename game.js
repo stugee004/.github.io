@@ -106,14 +106,19 @@ window.addEventListener(
 
 
         if(
-            e.key === "r" ||
-            e.key === "R"
-        ){
+    e.key === "r" ||
+    e.key === "R"
+){
 
-            resetGame();
+    resetGame();
 
-        }
+    if(typeof State !== "undefined"){
 
+        State.startGame();
+
+    }
+
+}
 
         if(typeof sounds !== "undefined"){
 
@@ -228,18 +233,24 @@ function resetRound(){
 
 function resetGame(){
 
-    playerScore=0;
+    playerScore = 0;
 
-    cpuScore=0;
-
-    winner="";
+    cpuScore = 0;
 
 
+    gameOver = false;
 
-    createObjects();
+    winner = "";
+
+
+    serving = false;
+
+    serveTimer = 0;
+
+
+    createPlayers();
 
 }
-
 
 
 
