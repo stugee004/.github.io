@@ -323,9 +323,20 @@ function update(){
         return;
 
     }
-    if(roundDelay > 0){
+    if(serving){
 
-    roundDelay--;
+    serveTimer--;
+
+
+    if(serveTimer <= 0){
+
+        serving = false;
+
+
+        ball.reset();
+
+    }
+
 
     return;
 
