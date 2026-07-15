@@ -45,7 +45,7 @@ class Ball {
 
 
 
-        this.speed = 7;
+        this.speed = 14;
 
 
 
