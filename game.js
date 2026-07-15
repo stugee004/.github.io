@@ -70,6 +70,10 @@ let roundMessage = "";
 
 let roundTimer = 0;
 
+let serving = false;
+
+let serveTimer = 0;
+
 // =====================================
 // Input
 // =====================================
@@ -221,9 +225,12 @@ function resetRound(){
 
     ball.reset();
 
-    roundDelay = 120; // about 2 seconds at 60fps
+    serving = true;
 
-    roundMessage = "GET READY";
+    serveTimer = 120; // 2 seconds
+
+    ball.dx = 0;
+    ball.dy = 0;
 
 }
 
