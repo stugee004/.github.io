@@ -179,7 +179,7 @@ class Ball {
 
         if(typeof playHit === "function"){
 
-            playHit();
+            sounds.hit();
 
         }
 
@@ -216,7 +216,7 @@ class Ball {
 
         if(typeof playWall === "function"){
 
-            playWall();
+            sounds.wall();
 
         }
 
