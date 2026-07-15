@@ -68,6 +68,8 @@ let roundDelay = 0;
 
 let roundMessage = "";
 
+let roundTimer = 0;
+
 // =====================================
 // Input
 // =====================================
@@ -105,7 +107,14 @@ window.addEventListener(
                 State.startGame();
 
             }
+        if(
+    e.key === "m" ||
+    e.key === "M"
+){
 
+    State.openMenu();
+
+}
         }
 
 
@@ -697,7 +706,7 @@ function drawVictory(){
 
     ctx.fillText(
 
-        "Press R to restart",
+        "Press R to restart | Press M for menu",
 
         canvas.width/2,
 
@@ -722,9 +731,9 @@ function drawVictory(){
 
 function resetRound(){
 
-
     ball.reset();
 
+    roundTimer = 120; // 2 seconds at 60fps
 
 }
 
