@@ -113,13 +113,20 @@ class AbilitiesUI {
 
 
 
-        if(menu){
+        open(){
 
 
-            menu.hide();
+    this.visible = true;
 
 
-        }
+    this.abilities.style.display =
+        "block";
+
+
+    this.refresh();
+
+
+}
 
 
 
