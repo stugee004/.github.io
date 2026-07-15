@@ -3,16 +3,11 @@ class AbilitiesUI {
 
     constructor(){
 
-
         this.visible = false;
-
 
         this.create();
 
-
     }
-
-
 
 
 
@@ -21,101 +16,73 @@ class AbilitiesUI {
     create(){
 
 
-
         const abilities =
             document.createElement("div");
-
 
 
         abilities.id = "abilitiesUI";
 
 
-        abilities.style.display =
-            "none";
-
+        abilities.style.display = "none";
 
 
 
         abilities.innerHTML = `
 
-
             <h2>ABILITIES</h2>
-
-
 
             <div id="abilitiesBalance">
                 Cenes: 0
             </div>
 
-
-
             <div id="abilityItems"></div>
-
-
 
             <button id="closeAbilities">
                 Back
             </button>
 
-
-
         `;
 
 
 
-        document.body.appendChild(
-            abilities
-        );
+        document.body.appendChild(abilities);
 
 
 
-        this.abilities =
-            abilities;
-
-
+        this.abilities = abilities;
 
 
 
         document
-        .getElementById(
-            "closeAbilities"
-        )
+        .getElementById("closeAbilities")
         .onclick = ()=>{
 
-
             this.close();
-
 
         };
 
 
-
     }
 
-        open(){
 
 
-    this.visible = true;
 
 
-    this.abilities.style.display =
-        "block";
 
 
-    this.refresh();
+    open(){
 
 
-}
+        this.visible = true;
 
+
+        this.abilities.style.display = "block";
 
 
         this.refresh();
 
 
-
     }
-
-
 
 
 
@@ -126,29 +93,20 @@ class AbilitiesUI {
     close(){
 
 
-
         this.visible = false;
 
 
-
-        this.abilities.style.display =
-            "none";
+        this.abilities.style.display = "none";
 
 
-
-        if(menu){
-
+        if(typeof menu !== "undefined"){
 
             menu.show();
-
 
         }
 
 
-
     }
-
-
 
 
 
@@ -160,33 +118,16 @@ class AbilitiesUI {
 
 
 
-        let balance = 0;
-
-
-
         if(typeof economy !== "undefined"){
 
 
-            balance =
-                economy.cenes;
+            document
+            .getElementById("abilitiesBalance")
+            .innerText =
+                "Cenes: " + economy.cenes;
 
 
         }
-
-
-
-
-
-        document
-        .getElementById(
-            "abilitiesBalance"
-        )
-        .innerText =
-
-            "Cenes: "
-            +
-            balance;
-
 
 
 
@@ -199,23 +140,15 @@ class AbilitiesUI {
             );
 
 
-
         container.innerHTML = "";
-
-
-
-
 
 
 
         if(typeof abilities === "undefined"){
 
-
             return;
 
-
         }
-
 
 
 
@@ -234,31 +167,16 @@ class AbilitiesUI {
 
 
 
-
-
             const button =
-                document.createElement(
-                    "button"
-                );
-
-
-
+                document.createElement("button");
 
 
 
             button.innerText =
-
-                ability.name
-                +
-                " - "
-                +
-                ability.cost
-                +
+                ability.name +
+                " - " +
+                ability.cost +
                 " Cenes";
-
-
-
-
 
 
 
@@ -266,15 +184,11 @@ class AbilitiesUI {
             if(ability.unlocked){
 
 
-
                 button.innerText +=
                     " ✓ Unlocked";
 
 
-
-                button.disabled =
-                    true;
-
+                button.disabled = true;
 
 
             }
@@ -284,26 +198,20 @@ class AbilitiesUI {
 
 
 
-
             button.onclick = ()=>{
-
 
 
                 abilities.unlock(key);
 
 
-
                 this.refresh();
-
 
 
             };
 
 
 
-            container.appendChild(
-                button
-            );
+            container.appendChild(button);
 
 
 
@@ -314,10 +222,7 @@ class AbilitiesUI {
     }
 
 
-
 }
-
-
 
 
 
