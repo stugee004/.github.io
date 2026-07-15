@@ -1,25 +1,12 @@
+// =====================================
+// Hyper Pong Shop System
+// =====================================
+
 class Shop {
 
 
     constructor(){
 
-        load(){
-
-    if(typeof save === "undefined"){
-        return;
-    }
-
-
-    Object.keys(this.items).forEach(key=>{
-
-        this.items[key].owned =
-            save.get(
-                "shop." + key
-            ) || false;
-
-    });
-
-}
 
         this.items = {
 
@@ -38,7 +25,6 @@ class Shop {
             },
 
 
-
             goldenBall: {
 
                 name: "Golden Ball",
@@ -53,7 +39,6 @@ class Shop {
             },
 
 
-
             starTrail: {
 
                 name: "Star Trail",
@@ -66,7 +51,6 @@ class Shop {
                 owned: false
 
             }
-
 
 
         };
@@ -84,10 +68,7 @@ class Shop {
 
 
 
-
-
     buy(itemName){
-
 
 
         const item =
@@ -101,12 +82,9 @@ class Shop {
                 "Item does not exist"
             );
 
-            return;
+            return false;
 
         }
-
-
-
 
 
 
@@ -119,12 +97,9 @@ class Shop {
             );
 
 
-            return;
-
+            return false;
 
         }
-
-
 
 
 
@@ -136,10 +111,8 @@ class Shop {
 
         if(typeof economy !== "undefined"){
 
-
             balance =
                 economy.cenes;
-
 
         }
 
@@ -147,10 +120,7 @@ class Shop {
 
 
 
-
-
         if(balance >= item.cost){
-
 
 
             economy.cenes -= item.cost;
@@ -161,21 +131,15 @@ class Shop {
 
 
 
+            this.save();
+
+
 
             if(typeof sounds !== "undefined"){
 
-
                 sounds.coin();
 
-
             }
-
-
-
-
-
-
-            this.save();
 
 
 
@@ -185,18 +149,19 @@ class Shop {
             );
 
 
-
-        }
-        else{
-
-
-            console.log(
-                "Not enough Cenes"
-            );
+            return true;
 
 
         }
 
+
+
+        console.log(
+            "Not enough Cenes"
+        );
+
+
+        return false;
 
 
     }
@@ -207,10 +172,7 @@ class Shop {
 
 
 
-
-
     equip(itemName){
-
 
 
         const item =
@@ -226,20 +188,6 @@ class Shop {
             return;
 
         }
-
-
-
-
-
-        if(typeof sounds !== "undefined"){
-
-
-            sounds.ability();
-
-
-        }
-
-
 
 
 
@@ -261,8 +209,6 @@ class Shop {
 
 
 
-
-
     load(){
 
 
@@ -273,7 +219,16 @@ class Shop {
 
 
 
-        if(saved){
+        if(!saved){
+
+            return;
+
+        }
+
+
+
+
+        try{
 
 
             const data =
@@ -281,14 +236,39 @@ class Shop {
 
 
 
-            Object.assign(
-                this.items,
-                data
+            Object.keys(data)
+            .forEach(key=>{
+
+
+                if(this.items[key]){
+
+
+                    this.items[key].owned =
+                        data[key].owned || false;
+
+
+                }
+
+
+            });
+
+
+
+        }
+        catch(error){
+
+
+            console.log(
+                "Shop save corrupted, resetting"
+            );
+
+
+            localStorage.removeItem(
+                "shopData"
             );
 
 
         }
-
 
 
     }
@@ -299,9 +279,7 @@ class Shop {
 
 
 
-
     save(){
-
 
 
         localStorage.setItem(
@@ -321,6 +299,8 @@ class Shop {
 
 
 
+
+
     getOwned(){
 
 
@@ -335,9 +315,7 @@ class Shop {
     }
 
 
-
 }
-
 
 
 
