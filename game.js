@@ -83,58 +83,46 @@ const keys = {};
 
 
 window.addEventListener(
-
     "keydown",
-
     e=>{
 
-        keys[e.key]=true;
-
-
 
         if(
-
-            e.key==="r" ||
-
-            e.key==="R"
-
+            (e.key === "m" || e.key === "M") &&
+            typeof State !== "undefined"
         ){
 
-            if(
+            State.openMenu();
 
-                State.isVictory() ||
+            gameStarted = false;
 
-                State.isGameOver()
+            return;
 
-            ){
-
-                State.startGame();
-
-            }
-        if(
-    e.key === "m" ||
-    e.key === "M"
-){
-
-    State.openMenu();
-
-}
         }
 
 
 
+        keys[e.key] = true;
+
+
         if(
-
-            typeof sounds!=="undefined"
-
+            e.key === "r" ||
+            e.key === "R"
         ){
+
+            resetGame();
+
+        }
+
+
+        if(typeof sounds !== "undefined"){
 
             sounds.unlock();
 
         }
 
-    }
 
+    }
 );
 
 
@@ -536,7 +524,16 @@ function draw(){
 
     UI.draw();
 
+    if(
+    State.is("playing") ||
+    State.is("paused") ||
+    State.is("victory") ||
+    State.is("gameover")
+){
+
     drawScore();
+
+}
 
 
 
