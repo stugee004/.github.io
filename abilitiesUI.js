@@ -92,27 +92,6 @@ class AbilitiesUI {
 
     }
 
-
-
-
-
-
-
-
-
-    open(){
-
-
-
-        this.visible = true;
-
-
-
-        this.abilities.style.display =
-            "block";
-
-
-
         open(){
 
 
