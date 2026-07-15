@@ -1,73 +1,49 @@
-class MenuManager {
+class Menu {
 
 
     constructor(){
 
 
-        this.screen = "menu";
+        this.visible = true;
 
 
-        this.createMenu();
+        this.buttons = [
+
+            {
+                text: "PLAY",
+                action: ()=>{
+
+                    this.startGame();
+
+                }
+
+            },
 
 
-    }
+            {
+                text: "SHOP",
+                action: ()=>{
+
+                    this.openShop();
+
+                }
+
+            },
 
 
+            {
+                text: "ABILITIES",
+                action: ()=>{
+
+                    this.openAbilities();
+
+                }
+
+            }
 
 
+        ];
 
-    createMenu(){
-
-
-        const menu =
-            document.createElement("div");
-
-
-        menu.id = "mainMenu";
-
-
-        menu.innerHTML = `
-
-            <h1>HYPER PONG</h1>
-
-            <div id="cenes">
-                0
-            </div>
-
-
-            <button id="playButton">
-                PLAY
-            </button>
-
-
-            <button id="difficultyButton">
-                Difficulty: Medium
-            </button>
-
-
-            <button id="shopButton">
-                Shop
-            </button>
-
-
-            <button id="abilitiesButton">
-                Abilities
-            </button>
-
-        `;
-
-
-
-        document.body.appendChild(menu);
-
-
-
-        this.menu =
-            menu;
-
-
-
-        this.connectButtons();
 
 
     }
@@ -77,72 +53,30 @@ class MenuManager {
 
 
 
-    connectButtons(){
 
 
-
-        document
-        .getElementById(
-            "playButton"
-        )
-        .onclick = ()=>{
+    clickSound(){
 
 
-            this.startGame();
+        if(typeof sounds !== "undefined"){
 
 
-        };
+            sounds.unlock();
 
 
+            sounds.playTone(
+                600,
+                0.08,
+                "square"
+            );
 
 
-
-        document
-        .getElementById(
-            "difficultyButton"
-        )
-        .onclick = ()=>{
-
-
-            this.changeDifficulty();
-
-
-        };
-
-
-
-
-
-        document
-        .getElementById(
-            "shopButton"
-        )
-        .onclick = ()=>{
-
-
-            this.openShop();
-
-
-        };
-
-
-
-
-
-        document
-        .getElementById(
-            "abilitiesButton"
-        )
-        .onclick = ()=>{
-
-
-            this.openAbilities();
-
-
-        };
+        }
 
 
     }
+
+
 
 
 
@@ -153,86 +87,26 @@ class MenuManager {
     startGame(){
 
 
-        this.screen =
-            "game";
 
-
-        this.menu.style.display =
-            "none";
+        this.clickSound();
 
 
 
-        if(typeof resetGame === "function"){
+        this.visible = false;
+
+
+
+        if(typeof startGame === "function"){
 
             startGame();
 
         }
 
 
-        gameStarted = true;
-
 
     }
 
 
-
-
-
-
-
-    changeDifficulty(){
-
-
-        let current =
-            save.get(
-                "settings.difficulty"
-            );
-
-
-
-        let next;
-
-
-
-        if(current==="easy"){
-
-            next="medium";
-
-        }
-
-        else if(current==="medium"){
-
-            next="hard";
-
-        }
-
-        else{
-
-            next="easy";
-
-        }
-
-
-
-
-        save.set(
-            "settings.difficulty",
-            next
-        );
-
-
-
-        document
-        .getElementById(
-            "difficultyButton"
-        )
-        .innerText =
-            "Difficulty: " + 
-next.charAt(0).toUpperCase() +
-next.slice(1)
-
-
-    }
 
 
 
@@ -243,15 +117,32 @@ next.slice(1)
     openShop(){
 
 
-        console.log(
-            "Shop opened"
-        );
+
+        this.clickSound();
 
 
-        // shop UI will connect here
+
+        if(typeof shopUI !== "undefined"){
+
+
+            shopUI.open();
+
+
+        }
+        else{
+
+
+            console.log(
+                "Shop UI not loaded"
+            );
+
+
+        }
 
 
     }
+
+
 
 
 
@@ -262,35 +153,147 @@ next.slice(1)
     openAbilities(){
 
 
-        console.log(
-            "Abilities opened"
+
+        this.clickSound();
+
+
+
+        if(typeof abilitiesUI !== "undefined"){
+
+
+            abilitiesUI.open();
+
+
+        }
+        else{
+
+
+            console.log(
+                "Abilities UI not loaded"
+            );
+
+
+        }
+
+
+    }
+
+
+
+
+
+
+
+
+    draw(ctx){
+
+
+
+        if(!this.visible){
+
+            return;
+
+        }
+
+
+
+        ctx.fillStyle="white";
+
+
+        ctx.font="50px Arial";
+
+
+        ctx.textAlign="center";
+
+
+
+        ctx.fillText(
+
+            "HYPER PONG",
+
+            canvas.width/2,
+
+            150
+
         );
 
 
+
+        this.buttons.forEach(
+
+            (button,index)=>{
+
+
+                ctx.font="30px Arial";
+
+
+
+                ctx.fillText(
+
+                    button.text,
+
+                    canvas.width/2,
+
+                    260 + index*70
+
+                );
+
+
+            }
+
+        );
+
+
+
     }
 
 
 
 
 
-    show(){
-
-
-        this.menu.style.display =
-            "block";
-
-
-    }
 
 
 
 
+    handleClick(x,y){
 
-    hide(){
 
 
-        this.menu.style.display =
-            "none";
+        if(!this.visible){
+
+            return;
+
+        }
+
+
+
+        this.buttons.forEach(
+
+            (button,index)=>{
+
+
+                const buttonY =
+                    230 + index*70;
+
+
+
+                if(
+                    y > buttonY &&
+                    y < buttonY + 50
+                ){
+
+
+                    button.action();
+
+
+                }
+
+
+
+            }
+
+        );
+
 
 
     }
@@ -304,4 +307,4 @@ next.slice(1)
 
 
 const menu =
-    new MenuManager();
+    new Menu();
