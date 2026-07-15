@@ -173,7 +173,9 @@ class AbilityManager {
 
         if(typeof playAbility === "function"){
 
-            playAbility();
+            if(typeof sounds !== "undefined"){
+    sounds.ability();
+}
 
         }
 
