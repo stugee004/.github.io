@@ -596,7 +596,7 @@ class UIManager{
 
 
         this.buildMainMenu();
-
+        this.buildShop();
     }
 
 
@@ -921,9 +921,9 @@ class UIManager{
 
             case "shop":
 
-                this.drawShopPlaceholder();
+    this.drawShopScreen();
 
-                break;
+    break;
 
 
 
@@ -1212,3 +1212,335 @@ class UIManager{
 
 const UI =
     new UIManager();
+/*==================================================
+    ui.js
+    Part 3
+    Shop Screen
+==================================================*/
+
+UI.shopButtons = [];
+
+
+
+UI.buildShop = function(){
+
+    this.shopButtons = [];
+
+
+
+    let y = 170;
+
+
+
+    if(typeof shop === "undefined"){
+
+        return;
+
+    }
+
+
+
+    Object.keys(shop.items).forEach(key=>{
+
+        const item =
+            shop.items[key];
+
+
+
+        const button =
+            new UIButton(
+
+                canvas.width-250,
+
+                y+20,
+
+                170,
+
+                44,
+
+                item.owned ?
+                    "OWNED" :
+                    "BUY",
+
+                ()=>{
+
+                    if(item.owned){
+
+                        return;
+
+                    }
+
+
+
+                    shop.buy(key);
+
+
+
+                    this.buildShop();
+
+                }
+
+            );
+
+
+
+        button.itemKey = key;
+
+
+
+        this.shopButtons.push(button);
+
+
+
+        y += 95;
+
+    });
+
+};
+
+
+
+
+
+
+
+UI.drawShopScreen = function(){
+
+    ctx.save();
+
+
+
+    const panel =
+        new UIPanel(
+
+            70,
+
+            50,
+
+            canvas.width-140,
+
+            canvas.height-100
+
+        );
+
+
+
+    panel.draw(ctx);
+
+
+
+
+
+    ctx.fillStyle = "white";
+
+    ctx.textAlign = "center";
+
+
+
+    ctx.font = "bold 56px Arial";
+
+
+
+    ctx.shadowBlur = 30;
+
+    ctx.shadowColor = "cyan";
+
+
+
+    ctx.fillText(
+
+        "SHOP",
+
+        canvas.width/2,
+
+        105
+
+    );
+
+
+
+
+
+    let cenes = 0;
+
+    if(typeof economy !== "undefined"){
+
+        cenes = economy.cenes;
+
+    }
+
+
+
+    ctx.font = "24px Arial";
+
+
+
+    ctx.fillStyle = "gold";
+
+
+
+    ctx.fillText(
+
+        "💰 " + cenes + " Cenes",
+
+        canvas.width/2,
+
+        140
+
+    );
+
+
+
+
+
+    if(typeof shop === "undefined"){
+
+        ctx.restore();
+
+        return;
+
+    }
+
+
+
+
+
+    let y = 170;
+
+
+
+    Object.keys(shop.items).forEach(key=>{
+
+        const item =
+            shop.items[key];
+
+
+
+        ctx.fillStyle =
+            "rgba(18,28,48,.9)";
+
+
+
+        ctx.strokeStyle = "cyan";
+
+
+
+        ctx.lineWidth = 2;
+
+
+
+        ctx.beginPath();
+
+
+
+        ctx.roundRect(
+
+            100,
+
+            y,
+
+            canvas.width-320,
+
+            75,
+
+            14
+
+        );
+
+
+
+        ctx.fill();
+
+        ctx.stroke();
+
+
+
+
+
+        ctx.fillStyle = "white";
+
+
+
+        ctx.font = "bold 24px Arial";
+
+
+
+        ctx.fillText(
+
+            item.name,
+
+            220,
+
+            y+30
+
+        );
+
+
+
+
+
+        ctx.font = "16px Arial";
+
+
+
+        ctx.fillStyle = "#99ddff";
+
+
+
+        ctx.fillText(
+
+            item.description || "",
+
+            260,
+
+            y+56
+
+        );
+
+
+
+
+
+        ctx.fillStyle = "gold";
+
+
+
+        ctx.font = "20px Arial";
+
+
+
+        ctx.fillText(
+
+            item.cost + " C",
+
+            canvas.width-340,
+
+            y+42
+
+        );
+
+
+
+        y += 95;
+
+    });
+
+
+
+
+
+    this.shopButtons.forEach(button=>{
+
+        button.update();
+
+        button.draw(ctx);
+
+    });
+
+
+
+
+
+    ctx.restore();
+
+};
