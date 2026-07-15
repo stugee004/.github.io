@@ -1,9 +1,29 @@
+// =====================================
+// Hyper Pong
+// State Manager V2
+// =====================================
+
 class StateManager {
 
     constructor(){
 
-        this.current = "boot";
+        this.states = [
 
+            "boot",
+            "menu",
+            "playing",
+            "paused",
+            "shop",
+            "abilities",
+            "victory",
+            "gameover",
+            "settings",
+            "achievements",
+            "credits"
+
+        ];
+
+        this.current = "boot";
         this.previous = null;
 
         this.listeners = [];
@@ -12,19 +32,41 @@ class StateManager {
 
 
 
-
+    //=========================
+    // Events
+    //=========================
 
     onChange(callback){
 
-        this.listeners.push(callback);
+        if(typeof callback === "function"){
+
+            this.listeners.push(callback);
+
+        }
 
     }
 
 
 
-
+    //=========================
+    // Change State
+    //=========================
 
     change(state){
+
+        if(!this.states.includes(state)){
+
+            console.warn(
+
+                "Unknown state:",
+
+                state
+
+            );
+
+            return;
+
+        }
 
         if(this.current === state){
 
@@ -33,11 +75,12 @@ class StateManager {
         }
 
         this.previous = this.current;
-
         this.current = state;
 
         console.log(
+
             `State: ${this.previous} → ${this.current}`
+
         );
 
         if(typeof Engine !== "undefined"){
@@ -49,8 +92,11 @@ class StateManager {
         this.listeners.forEach(listener=>{
 
             listener(
+
                 this.current,
+
                 this.previous
+
             );
 
         });
@@ -59,7 +105,9 @@ class StateManager {
 
 
 
-
+    //=========================
+    // Navigation
+    //=========================
 
     boot(){
 
@@ -67,19 +115,11 @@ class StateManager {
 
     }
 
-
-
-
-
     openMenu(){
 
         this.change("menu");
 
     }
-
-
-
-
 
     startGame(){
 
@@ -105,19 +145,11 @@ class StateManager {
 
     }
 
-
-
-
-
     pause(){
 
         this.change("paused");
 
     }
-
-
-
-
 
     resume(){
 
@@ -125,9 +157,21 @@ class StateManager {
 
     }
 
+    togglePause(){
 
+        if(this.isPaused()){
 
+            this.resume();
 
+        }
+
+        else if(this.isPlaying()){
+
+            this.pause();
+
+        }
+
+    }
 
     openShop(){
 
@@ -135,29 +179,35 @@ class StateManager {
 
     }
 
-
-
-
-
     openAbilities(){
 
         this.change("abilities");
 
     }
 
+    openSettings(){
 
+        this.change("settings");
 
+    }
 
+    openAchievements(){
+
+        this.change("achievements");
+
+    }
+
+    openCredits(){
+
+        this.change("credits");
+
+    }
 
     victory(){
 
         this.change("victory");
 
     }
-
-
-
-
 
     gameOver(){
 
@@ -167,30 +217,9 @@ class StateManager {
 
 
 
-
-
-    back(){
-
-        switch(this.previous){
-
-            case "menu":
-                this.openMenu();
-                break;
-
-            case "playing":
-                this.startGame();
-                break;
-
-            default:
-                this.openMenu();
-
-        }
-
-    }
-
-
-
-
+    //=========================
+    // Helpers
+    //=========================
 
     is(state){
 
@@ -198,10 +227,94 @@ class StateManager {
 
     }
 
+    isMenu(){
+
+        return this.current === "menu";
+
+    }
+
+    isPlaying(){
+
+        return this.current === "playing";
+
+    }
+
+    isPaused(){
+
+        return this.current === "paused";
+
+    }
+
+    isShop(){
+
+        return this.current === "shop";
+
+    }
+
+    isAbilities(){
+
+        return this.current === "abilities";
+
+    }
+
+    isVictory(){
+
+        return this.current === "victory";
+
+    }
+
+    isGameOver(){
+
+        return this.current === "gameover";
+
+    }
+
+
+
+    //=========================
+    // Back Navigation
+    //=========================
+
+    back(){
+
+        switch(this.previous){
+
+            case "playing":
+
+                this.resume();
+                break;
+
+            case "shop":
+
+                this.openShop();
+                break;
+
+            case "abilities":
+
+                this.openAbilities();
+                break;
+
+            case "settings":
+
+                this.openSettings();
+                break;
+
+            default:
+
+                this.openMenu();
+
+        }
+
+    }
+
 }
 
 
 
-
-
 const State = new StateManager();
+
+
+
+// Automatically enter the menu
+
+State.openMenu();
