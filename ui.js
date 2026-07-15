@@ -682,30 +682,37 @@ class UIManager{
 
 
 
-        const shopButton =
-            new UIButton(
+const shopButton =
+    new UIButton(
 
-                canvas.width/2-140,
+        canvas.width/2-140,
 
-                310,
+        310,
 
-                280,
+        280,
 
-                60,
+        60,
 
-                "🛒 SHOP",
+        "🛒 SHOP",
 
-                ()=>{
+        ()=>{
 
-                    if(typeof State!=="undefined"){
+            if(typeof State !== "undefined"){
 
-                        State.openShop();
+                State.openShop();
 
-                    }
+            }
 
-                }
 
-            );
+            if(typeof shopUI !== "undefined"){
+
+                shopUI.open();
+
+            }
+
+        }
+
+    );
 
 
 
@@ -729,17 +736,22 @@ class UIManager{
 
                 "⚡ ABILITIES",
 
-                ()=>{
+()=>{
 
-                    if(typeof State!=="undefined"){
+    if(typeof State !== "undefined"){
 
-                        State.openAbilities();
+        State.openAbilities();
 
-                    }
+    }
 
-                }
 
-            );
+    if(typeof abilitiesUI !== "undefined"){
+
+        abilitiesUI.open();
+
+    }
+
+}
 
 
 
