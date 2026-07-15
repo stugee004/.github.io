@@ -597,6 +597,7 @@ class UIManager{
 
         this.buildMainMenu();
         this.buildShop();
+        this.buildAbilities();
     }
 
 
@@ -907,7 +908,7 @@ class UIManager{
 
         }
 
-
+        this.drawMenuBackground();
 
         switch(State.current){
 
@@ -929,12 +930,12 @@ class UIManager{
 
             case "abilities":
 
-                this.drawAbilitiesPlaceholder();
+    this.drawAbilitiesScreen();
 
-                break;
+    break;
 
         }
-
+        this.drawVersion();
     }
 
 
@@ -1538,6 +1539,507 @@ UI.drawShopScreen = function(){
     });
 
 
+
+
+
+    ctx.restore();
+
+};
+/*==================================================
+    ui.js
+    Part 4
+    Abilities + Navigation
+==================================================*/
+
+UI.abilityButtons = [];
+
+
+
+
+
+UI.buildAbilities = function(){
+
+    this.abilityButtons = [];
+
+
+
+    if(typeof abilities === "undefined"){
+
+        return;
+
+    }
+
+
+
+    let y = 170;
+
+
+
+    Object.keys(
+        abilities.abilities
+    ).forEach(key=>{
+
+        const ability =
+            abilities.abilities[key];
+
+
+
+        const button =
+            new UIButton(
+
+                canvas.width-250,
+
+                y+20,
+
+                170,
+
+                44,
+
+                ability.unlocked ?
+                    "UNLOCKED" :
+                    "UNLOCK",
+
+                ()=>{
+
+                    if(ability.unlocked){
+
+                        return;
+
+                    }
+
+
+
+                    abilities.unlock(key);
+
+
+
+                    this.buildAbilities();
+
+                }
+
+            );
+
+
+
+        button.abilityKey = key;
+
+
+
+        this.abilityButtons.push(button);
+
+
+
+        y += 95;
+
+    });
+
+
+
+
+
+    this.backButton =
+
+        new UIButton(
+
+            70,
+
+            canvas.height-70,
+
+            180,
+
+            45,
+
+            "← BACK",
+
+            ()=>{
+
+                if(typeof State!=="undefined"){
+
+                    State.openMenu();
+
+                }
+
+            }
+
+        );
+
+};
+
+
+
+
+
+
+
+
+
+UI.drawAbilitiesScreen = function(){
+
+    const panel =
+
+        new UIPanel(
+
+            70,
+
+            50,
+
+            canvas.width-140,
+
+            canvas.height-100
+
+        );
+
+
+
+    panel.draw(ctx);
+
+
+
+
+
+    ctx.save();
+
+
+
+    ctx.textAlign = "center";
+
+
+
+    ctx.shadowBlur = 30;
+
+    ctx.shadowColor = "cyan";
+
+
+
+    ctx.fillStyle = "white";
+
+
+
+    ctx.font = "bold 54px Arial";
+
+
+
+    ctx.fillText(
+
+        "ABILITIES",
+
+        canvas.width/2,
+
+        105
+
+    );
+
+
+
+
+
+    let cenes = 0;
+
+    if(typeof economy!=="undefined"){
+
+        cenes = economy.cenes;
+
+    }
+
+
+
+    ctx.font = "22px Arial";
+
+
+
+    ctx.fillStyle = "gold";
+
+
+
+    ctx.fillText(
+
+        "💰 "+cenes+" Cenes",
+
+        canvas.width/2,
+
+        140
+
+    );
+
+
+
+
+
+    if(typeof abilities!=="undefined"){
+
+        let y = 170;
+
+
+
+        Object.keys(
+
+            abilities.abilities
+
+        ).forEach(key=>{
+
+            const ability =
+
+                abilities.abilities[key];
+
+
+
+            ctx.fillStyle =
+
+                "rgba(20,30,55,.90)";
+
+
+
+            ctx.strokeStyle =
+
+                "cyan";
+
+
+
+            ctx.lineWidth = 2;
+
+
+
+            ctx.beginPath();
+
+
+
+            ctx.roundRect(
+
+                100,
+
+                y,
+
+                canvas.width-320,
+
+                75,
+
+                14
+
+            );
+
+
+
+            ctx.fill();
+
+            ctx.stroke();
+
+
+
+
+
+            ctx.fillStyle = "white";
+
+
+
+            ctx.font = "bold 24px Arial";
+
+
+
+            ctx.fillText(
+
+                ability.name,
+
+                220,
+
+                y+30
+
+            );
+
+
+
+
+
+            ctx.fillStyle = "#99ddff";
+
+
+
+            ctx.font = "16px Arial";
+
+
+
+            ctx.fillText(
+
+                ability.description || "",
+
+                250,
+
+                y+56
+
+            );
+
+
+
+
+
+            ctx.fillStyle =
+
+                ability.unlocked ?
+
+                "#55ff88" :
+
+                "gold";
+
+
+
+            ctx.font = "20px Arial";
+
+
+
+            ctx.fillText(
+
+                ability.unlocked ?
+
+                "Unlocked" :
+
+                ability.cost+" C",
+
+                canvas.width-340,
+
+                y+42
+
+            );
+
+
+
+            y += 95;
+
+        });
+
+    }
+
+
+
+
+
+    this.abilityButtons.forEach(button=>{
+
+        button.update();
+
+        button.draw(ctx);
+
+    });
+
+
+
+
+
+    this.backButton.update();
+
+    this.backButton.draw(ctx);
+
+
+
+    ctx.restore();
+
+};
+
+
+
+
+
+
+
+
+
+UI.drawMenuBackground = function(){
+
+    ctx.save();
+
+
+
+    const gradient =
+
+        ctx.createLinearGradient(
+
+            0,
+
+            0,
+
+            0,
+
+            canvas.height
+
+        );
+
+
+
+    gradient.addColorStop(
+
+        0,
+
+        "#04060d"
+
+    );
+
+
+
+    gradient.addColorStop(
+
+        1,
+
+        "#081a33"
+
+    );
+
+
+
+    ctx.fillStyle = gradient;
+
+
+
+    ctx.fillRect(
+
+        0,
+
+        0,
+
+        canvas.width,
+
+        canvas.height
+
+    );
+
+
+
+    ctx.restore();
+
+};
+
+
+
+
+
+
+
+
+
+UI.drawVersion = function(){
+
+    ctx.save();
+
+
+
+    ctx.font = "16px Arial";
+
+
+
+    ctx.fillStyle = "#66ccff";
+
+
+
+    ctx.textAlign = "right";
+
+
+
+    ctx.fillText(
+
+        "Hyper Pong V2",
+
+        canvas.width-20,
+
+        canvas.height-20
+
+    );
 
 
 
