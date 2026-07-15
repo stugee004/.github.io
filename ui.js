@@ -598,6 +598,8 @@ class UIManager{
         this.buildMainMenu();
         this.buildShop();
         this.buildAbilities();
+        this.createDefaultScreens();
+        this.openScreen("menu");
     }
 
 
@@ -883,6 +885,8 @@ this.updateTransition();
 
 Mouse.update();
 
+this.updateScreens();
+
     }
 
 
@@ -930,9 +934,11 @@ Mouse.update();
 
     this.drawNotifications();
 
-this.drawPause();
+    this.drawPause();
 
-this.drawTransition();
+    this.drawTransition();
+
+    this.drawScreens();
 
     break;
 
@@ -2531,3 +2537,190 @@ State.onChange((current)=>{
     }
 
 });
+/*==================================================
+    ui.js
+    Part 6
+    Screen Manager
+==================================================*/
+
+
+
+class UIScreen{
+
+    constructor(name){
+
+        this.name = name;
+
+        this.components = [];
+
+        this.visible = false;
+
+    }
+
+
+
+    add(component){
+
+        this.components.push(component);
+
+        return component;
+
+    }
+
+
+
+    show(){
+
+        this.visible = true;
+
+    }
+
+
+
+    hide(){
+
+        this.visible = false;
+
+    }
+
+
+
+    update(){
+
+        if(!this.visible){
+
+            return;
+
+        }
+
+        this.components.forEach(c=>c.update());
+
+    }
+
+
+
+    draw(){
+
+        if(!this.visible){
+
+            return;
+
+        }
+
+        this.components.forEach(c=>c.draw(ctx));
+
+    }
+
+}
+
+
+
+
+
+
+
+UI.screens = {};
+
+UI.currentScreen = null;
+
+
+
+
+
+UI.addScreen = function(name){
+
+    const screen =
+
+        new UIScreen(name);
+
+    this.screens[name] = screen;
+
+    return screen;
+
+};
+
+
+
+
+
+UI.openScreen = function(name){
+
+    Object.values(this.screens).forEach(screen=>{
+
+        screen.hide();
+
+    });
+
+    if(this.screens[name]){
+
+        this.screens[name].show();
+
+        this.currentScreen = this.screens[name];
+
+    }
+
+};
+
+
+
+
+
+UI.updateScreens = function(){
+
+    if(this.currentScreen){
+
+        this.currentScreen.update();
+
+    }
+
+};
+
+
+
+
+
+UI.drawScreens = function(){
+
+    if(this.currentScreen){
+
+        this.currentScreen.draw();
+
+    }
+
+};
+
+
+
+
+
+
+
+UI.createDefaultScreens = function(){
+
+    this.addScreen("menu");
+
+    this.addScreen("shop");
+
+    this.addScreen("abilities");
+
+    this.addScreen("pause");
+
+    this.addScreen("victory");
+
+};
+
+
+
+
+
+
+
+if(typeof State !== "undefined"){
+
+    State.onChange(state=>{
+
+        UI.openScreen(state);
+
+    });
+
+}
