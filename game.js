@@ -765,9 +765,24 @@ function resetRound(){
 
     serveTimer = 120;
 
-    // freeze ball
+
     ball.dx = 0;
     ball.dy = 0;
+
+
+
+    if(player){
+
+        player.center();
+
+    }
+
+
+    if(cpu){
+
+        cpu.center();
+
+    }
 
 }
 
