@@ -219,7 +219,7 @@ class Ball {
 
         const angle =
             hitPosition *
-            Math.PI / 3;
+            Math.PI / 4;
 
 
 
