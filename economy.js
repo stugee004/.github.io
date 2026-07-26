@@ -1,6 +1,7 @@
 class Economy {
 
-
+    const DEV_MODE = true;
+    
     constructor(){
 
 
@@ -84,7 +85,16 @@ class Economy {
         this.totalWins++;
 
 
-        this.addCenes(50);
+        if(DEV_MODE){
+
+    economy.addCenes(5000);
+
+}
+else{
+
+    economy.addCenes(50);
+
+}
 
 
         this.save();
