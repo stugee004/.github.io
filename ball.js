@@ -108,7 +108,8 @@ class Ball {
     update(){
 
 
-
+        this.updateAppearance();
+        
         this.x += this.dx;
 
         this.y += this.dy;
