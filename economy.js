@@ -1,6 +1,7 @@
-class Economy {
+const DEV_MODE = true;
 
-    const DEV_MODE = true;
+class Economy {
+    
     
     constructor(){
 
