@@ -32,7 +32,23 @@ class Ball {
     }
 
 
+    updateAppearance(){
 
+    this.color = "white";
+
+
+    if(
+        typeof shop !== "undefined" &&
+        shop.items &&
+        shop.items.goldenBall &&
+        shop.items.goldenBall.owned
+    ){
+
+        this.color = "#FFD700";
+
+    }
+
+}
 
 
 
