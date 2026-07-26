@@ -433,7 +433,7 @@ class Ball {
 
 
 
-        ctx.fillStyle = "white";
+        ctx.fillStyle = this.color;
 
 
 
