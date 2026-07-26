@@ -3,6 +3,17 @@ class Ball {
 
     constructor(){
 
+        if(this.color === "#FFD700"){
+
+    ctx.shadowBlur = 25;
+    ctx.shadowColor = "#FFD700";
+
+}
+else{
+
+    ctx.shadowBlur = 0;
+
+}
 
         this.radius = 10;
 
@@ -28,7 +39,7 @@ class Ball {
 
         this.reset();
 
-
+        ctx.shadowBlur = 0;
     }
 
 
