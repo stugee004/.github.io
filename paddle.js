@@ -5,8 +5,10 @@
 
 class Paddle{
 
-    constructor(x,y,color="cyan"){
+    constructor(x,y,color="cyan",isPlayer=false){
 
+        this.isPlayer = isPlayer;
+        
         this.x = x;
         this.y = y;
 
@@ -62,15 +64,17 @@ class Paddle{
 
         if(
 
-            typeof shop !== "undefined" &&
+    this.isPlayer &&
 
-            shop.items &&
+    typeof shop !== "undefined" &&
 
-            shop.items.galaxyPaddle &&
+    shop.items &&
 
-            shop.items.galaxyPaddle.owned
+    shop.items.galaxyPaddle &&
 
-        ){
+    shop.items.galaxyPaddle.owned
+
+){
 
             this.isGalaxy = true;
 
