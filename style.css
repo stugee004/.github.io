@@ -452,3 +452,77 @@ canvas{
 
 
 }
+.shopItem{
+
+    border:2px solid white;
+
+    border-radius:12px;
+
+    padding:12px;
+
+    margin:12px 0;
+
+    background:rgba(255,255,255,.08);
+
+}
+
+.shopItem h3{
+
+    margin:0 0 6px 0;
+
+}
+
+.shopItem p{
+
+    margin:0 0 10px 0;
+
+    font-size:14px;
+
+    opacity:.8;
+
+}
+
+.shopItem button{
+
+    width:100%;
+
+}
+/* ===================================== */
+/* Abilities */
+/* ===================================== */
+
+.abilityItem{
+
+    border:2px solid white;
+
+    border-radius:12px;
+
+    padding:12px;
+
+    margin:12px 0;
+
+    background:rgba(255,255,255,.08);
+
+}
+
+.abilityItem h3{
+
+    margin:0 0 6px 0;
+
+}
+
+.abilityItem p{
+
+    margin:0 0 10px 0;
+
+    font-size:14px;
+
+    opacity:.8;
+
+}
+
+.abilityItem button{
+
+    width:100%;
+
+}
