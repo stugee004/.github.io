@@ -169,17 +169,17 @@ function createBackground(){
 
 function createObjects(){
 
-    player =
-        new Paddle(
+    player = new Paddle(
 
-            40,
+    40,
 
-            canvas.height/2-60,
+    canvas.height/2-60,
 
-            "cyan"
+    "cyan",
 
-        );
+    true
 
+);
 
 
     cpu =
