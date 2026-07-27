@@ -486,6 +486,38 @@ for(const star of this.trail){
 
     ctx.restore();
 
+    ctx.save();
+
+ctx.translate(
+
+    star.x,
+
+    star.y
+
+);
+
+ctx.globalAlpha = star.alpha;
+
+ctx.strokeStyle = "#FFF8AA";
+
+ctx.lineWidth = 2;
+
+
+
+ctx.beginPath();
+
+ctx.moveTo(-star.size,0);
+
+ctx.lineTo(star.size,0);
+
+ctx.moveTo(0,-star.size);
+
+ctx.lineTo(0,star.size);
+
+ctx.stroke();
+
+ctx.restore();
+    
 }
 
         ctx.shadowBlur = 25;
