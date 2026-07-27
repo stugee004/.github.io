@@ -3,8 +3,7 @@
 // Shop UI
 // =====================================
 
-class ShopUI {
-
+class ShopUI{
 
     constructor(){
 
@@ -20,65 +19,40 @@ class ShopUI {
 
     create(){
 
-
         const element =
             document.createElement("div");
 
+        element.id = "shopUI";
 
-        element.id =
-            "shopUI";
-
-
-        element.style.display =
-            "none";
-
-
+        element.style.display = "none";
 
         element.innerHTML = `
 
             <h2>SHOP</h2>
 
-
             <div id="shopBalance">
                 Cenes: 0
             </div>
 
-
             <div id="shopItems"></div>
 
-
             <button id="closeShop">
-                Back
+                ← Back
             </button>
-
 
         `;
 
+        document.body.appendChild(element);
 
-
-        document.body.appendChild(
-            element
-        );
-
-
-
-        this.element =
-            element;
-
-
+        this.element = element;
 
         document
-        .getElementById(
-            "closeShop"
-        )
-        .onclick = ()=>{
+            .getElementById("closeShop")
+            .onclick = ()=>{
 
+                this.close();
 
-            this.close();
-
-
-        };
-
+            };
 
     }
 
@@ -88,37 +62,31 @@ class ShopUI {
 
     open(){
 
-
         this.visible = true;
 
-
-        this.element.style.display =
-            "block";
-
+        this.element.style.display = "block";
 
         this.refresh();
 
-
     }
 
 
 
 
 
-   close(){
+    close(){
 
-    this.visible = false;
+        this.visible = false;
 
-    this.element.style.display = "none";
+        this.element.style.display = "none";
 
+        if(typeof State !== "undefined"){
 
-    if(typeof State !== "undefined"){
+            State.openMenu();
 
-        State.openMenu();
+        }
 
     }
-
-}
 
 
 
@@ -126,51 +94,33 @@ class ShopUI {
 
     refresh(){
 
+        // ----------------------------
+        // Balance
+        // ----------------------------
 
         let balance = 0;
 
-
-
         if(typeof economy !== "undefined"){
 
-            balance =
-                economy.cenes;
+            balance = economy.cenes;
 
         }
 
-
-
-        const balanceElement =
-            document.getElementById(
-                "shopBalance"
-            );
-
-
-        if(balanceElement){
-
-            balanceElement.innerText =
-                "Cenes: " + balance;
-
-        }
+        document.getElementById(
+            "shopBalance"
+        ).innerText =
+            "Cenes: " + balance;
 
 
 
-
+        // ----------------------------
+        // Item List
+        // ----------------------------
 
         const container =
             document.getElementById(
                 "shopItems"
             );
-
-
-
-        if(!container){
-
-            return;
-
-        }
-
-
 
         container.innerHTML = "";
 
@@ -178,10 +128,8 @@ class ShopUI {
 
         if(typeof shop === "undefined"){
 
-
             container.innerHTML =
-                "Shop unavailable";
-
+                "<p>Shop unavailable.</p>";
 
             return;
 
@@ -189,63 +137,86 @@ class ShopUI {
 
 
 
-
-        Object.keys(
-            shop.items
-        )
-        .forEach(key=>{
-
+        Object.keys(shop.items).forEach(key=>{
 
             const item =
                 shop.items[key];
 
 
 
+            const card =
+                document.createElement("div");
+
+            card.className = "shopItem";
+
+
+
+            const title =
+                document.createElement("h3");
+
+            title.innerText =
+                item.name;
+
+
+
+            const description =
+                document.createElement("p");
+
+            description.innerText =
+                item.description;
+
+
+
             const button =
-                document.createElement(
-                    "button"
-                );
+                document.createElement("button");
 
 
 
-            button.innerText =
+            if(item.owned){
 
-                item.name +
+                button.innerText =
+                    "✓ OWNED";
 
-                " - " +
+                button.disabled = true;
 
-                item.cost +
+            }
+            else{
 
-                " Cenes";
+                button.innerText =
+                    "Buy (" +
+                    item.cost +
+                    " Cenes)";
 
+            }
 
 
 
             button.onclick = ()=>{
 
-    const purchased = shop.buy(key);
+                const purchased =
+                    shop.buy(key);
 
-    if(purchased){
+                if(purchased){
 
-        this.refresh();
+                    this.refresh();
 
-    }
+                }
 
-};
+            };
 
 
 
-            container.appendChild(
-                button
-            );
+            card.appendChild(title);
 
+            card.appendChild(description);
+
+            card.appendChild(button);
+
+            container.appendChild(card);
 
         });
 
-
     }
-
-
 
 }
 
