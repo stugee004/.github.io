@@ -3,6 +3,8 @@ class Ball {
 
     constructor(){
 
+        this.trail = [];
+        
         if(this.color === "#FFD700"){
 
     ctx.shadowBlur = 25;
@@ -61,7 +63,60 @@ else{
 
 }
 
+    // ----------------------------
+// Star Trail
+// ----------------------------
 
+if(
+    typeof shop !== "undefined" &&
+    shop.items &&
+    shop.items.starTrail &&
+    shop.items.starTrail.owned
+){
+
+    this.trail.push({
+
+        x: this.x,
+
+        y: this.y,
+
+        size: 4,
+
+        alpha: 1
+
+    });
+
+}
+
+
+
+// Update stars
+
+for(let i=this.trail.length-1;i>=0;i--){
+
+    const star = this.trail[i];
+
+    star.alpha -= 0.03;
+
+    star.size *= 0.97;
+
+    if(star.alpha<=0){
+
+        this.trail.splice(i,1);
+
+    }
+
+}
+
+
+
+// Prevent unlimited stars
+
+if(this.trail.length>40){
+
+    this.trail.shift();
+
+}
 
     reset(){
 
@@ -399,7 +454,39 @@ else{
 
         ctx.save();
 
+// ----------------------------
+// Star Trail
+// ----------------------------
 
+for(const star of this.trail){
+
+    ctx.save();
+
+    ctx.globalAlpha = star.alpha;
+
+    ctx.fillStyle = "#FFF8AA";
+
+    ctx.beginPath();
+
+    ctx.arc(
+
+        star.x,
+
+        star.y,
+
+        star.size,
+
+        0,
+
+        Math.PI*2
+
+    );
+
+    ctx.fill();
+
+    ctx.restore();
+
+}
 
         ctx.shadowBlur = 25;
 
