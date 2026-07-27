@@ -3,8 +3,7 @@
 // Abilities UI
 // =====================================
 
-class AbilitiesUI {
-
+class AbilitiesUI{
 
     constructor(){
 
@@ -16,20 +15,16 @@ class AbilitiesUI {
 
 
 
-    create(){
 
+
+    create(){
 
         const element =
             document.createElement("div");
 
+        element.id = "abilitiesUI";
 
-        element.id =
-            "abilitiesUI";
-
-
-        element.style.display =
-            "none";
-
+        element.style.display = "none";
 
         element.innerHTML = `
 
@@ -39,39 +34,28 @@ class AbilitiesUI {
                 Cenes: 0
             </div>
 
-
             <div id="abilityItems"></div>
 
-
             <button id="closeAbilities">
-                Back
+                ← Back
             </button>
 
         `;
 
-
-
         document.body.appendChild(element);
 
-
-
-        this.element =
-            element;
-
-
+        this.element = element;
 
         document
-        .getElementById(
-            "closeAbilities"
-        )
-        .onclick = ()=>{
+            .getElementById("closeAbilities")
+            .onclick = ()=>{
 
-            this.close();
+                this.close();
 
-        };
-
+            };
 
     }
+
 
 
 
@@ -80,34 +64,29 @@ class AbilitiesUI {
 
         this.visible = true;
 
-
-        this.element.style.display =
-            "block";
-
+        this.element.style.display = "block";
 
         this.refresh();
 
-
     }
 
 
 
 
 
-   close(){
+    close(){
 
-    this.visible = false;
+        this.visible = false;
 
-    this.element.style.display = "none";
+        this.element.style.display = "none";
 
+        if(typeof State !== "undefined"){
 
-    if(typeof State !== "undefined"){
+            State.openMenu();
 
-        State.openMenu();
+        }
 
     }
-
-}
 
 
 
@@ -115,59 +94,45 @@ class AbilitiesUI {
 
     refresh(){
 
+        // ----------------------------
+        // Balance
+        // ----------------------------
 
         let balance = 0;
 
-
-
         if(typeof economy !== "undefined"){
 
-            balance =
-                economy.cenes;
+            balance = economy.cenes;
 
         }
 
-
-
-        const balanceText =
-            document.getElementById(
-                "abilitiesBalance"
-            );
-
-
-        if(balanceText){
-
-            balanceText.innerText =
-                "Cenes: " + balance;
-
-        }
+        document.getElementById(
+            "abilitiesBalance"
+        ).innerText =
+            "Cenes: " + balance;
 
 
 
-
+        // ----------------------------
+        // Ability List
+        // ----------------------------
 
         const container =
             document.getElementById(
                 "abilityItems"
             );
 
-
-        if(!container){
-
-            return;
-
-        }
-
-
-
         container.innerHTML = "";
 
 
 
-        if(typeof abilities === "undefined"){
+        if(
+            typeof abilities === "undefined" ||
+            !abilities.abilities
+        ){
 
             container.innerHTML =
-                "No abilities available";
+                "<p>Abilities unavailable.</p>";
 
             return;
 
@@ -177,45 +142,57 @@ class AbilitiesUI {
 
         Object.keys(
             abilities.abilities
-        )
-        .forEach(key=>{
-
+        ).forEach(key=>{
 
             const ability =
                 abilities.abilities[key];
 
 
 
+            const card =
+                document.createElement("div");
+
+            card.className =
+                "abilityItem";
+
+
+
+            const title =
+                document.createElement("h3");
+
+            title.innerText =
+                ability.name;
+
+
+
+            const description =
+                document.createElement("p");
+
+            description.innerText =
+                ability.description ||
+                "No description.";
+
+
+
             const button =
-                document.createElement(
-                    "button"
-                );
-
-
-
-            button.innerText =
-
-                ability.name +
-
-                " - " +
-
-                ability.cost +
-
-                " Cenes";
-
+                document.createElement("button");
 
 
 
             if(ability.unlocked){
 
+                button.innerText =
+                    "✓ UNLOCKED";
 
-                button.innerText +=
-                    " ✓";
+                button.disabled = true;
 
+            }
+            else{
 
-                button.disabled =
-                    true;
-
+                button.innerText =
+                    "Unlock (" +
+                    ability.cost +
+                    " Cenes)";
 
             }
 
@@ -223,28 +200,23 @@ class AbilitiesUI {
 
             button.onclick = ()=>{
 
-
                 abilities.unlock(key);
 
-
                 this.refresh();
-
 
             };
 
 
 
-            container.appendChild(
-                button
-            );
+            card.appendChild(title);
+            card.appendChild(description);
+            card.appendChild(button);
 
+            container.appendChild(card);
 
         });
 
-
     }
-
-
 
 }
 
