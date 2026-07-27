@@ -223,14 +223,15 @@ class ShopUI {
 
             button.onclick = ()=>{
 
+    const purchased = shop.buy(key);
 
-                shop.buy(key);
+    if(purchased){
 
+        this.refresh();
 
-                this.refresh();
+    }
 
-
-            };
+};
 
 
 
