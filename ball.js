@@ -1,133 +1,83 @@
-class Ball {
+// =====================================
+// Hyper Pong
+// Ball
+// Part 1 / 4
+// =====================================
 
+class Ball{
 
     constructor(){
 
-        this.trail = [];
-        
-        if(this.color === "#FFD700"){
-
-    ctx.shadowBlur = 25;
-    ctx.shadowColor = "#FFD700";
-
-}
-else{
-
-    ctx.shadowBlur = 0;
-
-}
-
         this.radius = 10;
 
-        this.speed = 14;
+        this.baseSpeed = 14;
 
+        this.speed = this.baseSpeed;
 
         this.x = canvas.width / 2;
+
         this.y = canvas.height / 2;
 
-
         this.dx = this.speed;
+
         this.dy = 0;
 
+        this.color = "#FFFFFF";
 
-        this.color = "white";
-
-
-        this.trailTimer = 0;
-
+        this.glowColor = "cyan";
 
         this.hitCooldown = 0;
 
+        this.trailTimer = 0;
+
+        this.trail = [];
 
         this.reset();
 
-        ctx.shadowBlur = 0;
     }
+
+
+
 
 
     updateAppearance(){
 
-    this.color = "white";
+        // ----------------------------
+        // Defaults
+        // ----------------------------
 
+        this.color = "#FFFFFF";
 
-    if(
-        typeof shop !== "undefined" &&
-        shop.items &&
-        shop.items.goldenBall &&
-        shop.items.goldenBall.owned
-    ){
-
-        this.color = "#FFD700";
-
-    }
-
-}
-
-    // ----------------------------
-// Star Trail
-// ----------------------------
-
-if(
-    typeof shop !== "undefined" &&
-    shop.items &&
-    shop.items.starTrail &&
-    shop.items.starTrail.owned
-){
-
-    this.trail.push({
-
-        x: this.x,
-
-        y: this.y,
-
-        size: 4,
-
-        alpha: 1
-
-    });
-
-}
+        this.glowColor = "cyan";
 
 
 
-// Update stars
+        if(
+            typeof shop !== "undefined" &&
+            shop.items &&
+            shop.items.goldenBall &&
+            shop.items.goldenBall.owned
+        ){
 
-for(let i=this.trail.length-1;i>=0;i--){
+            this.color = "#FFD700";
 
-    const star = this.trail[i];
+            this.glowColor = "#FFD700";
 
-    star.alpha -= 0.03;
-
-    star.size *= 0.97;
-
-    if(star.alpha<=0){
-
-        this.trail.splice(i,1);
+        }
 
     }
 
-}
 
 
 
-// Prevent unlimited stars
-
-if(this.trail.length>40){
-
-    this.trail.shift();
-
-}
 
     reset(){
-
 
         this.x = canvas.width / 2;
 
         this.y = canvas.height / 2;
 
-
-
-        this.speed = 14;
+        this.speed = this.baseSpeed;
 
 
 
@@ -137,50 +87,104 @@ if(this.trail.length>40){
 
 
         const angle =
-            (Math.random() - 0.5)
-            *
+            (Math.random() - 0.5) *
             Math.PI / 3;
 
 
 
         this.dx =
-            Math.cos(angle)
-            *
-            this.speed
-            *
+            Math.cos(angle) *
+            this.speed *
             direction;
 
 
 
         this.dy =
-            Math.sin(angle)
-            *
+            Math.sin(angle) *
             this.speed;
 
 
 
         this.hitCooldown = 0;
 
+        this.trail.length = 0;
 
     }
-
-
-
-
-
-
-
+        // =====================================
+    // Update
+    // =====================================
 
     update(){
 
-
         this.updateAppearance();
-        
-        this.x += this.dx;
-
-        this.y += this.dy;
 
 
+
+        // ----------------------------
+        // Star Trail Cosmetic
+        // ----------------------------
+
+        if(
+            typeof shop !== "undefined" &&
+            shop.items &&
+            shop.items.starTrail &&
+            shop.items.starTrail.owned
+        ){
+
+            this.trailTimer++;
+
+            if(this.trailTimer >= 2){
+
+                this.trailTimer = 0;
+
+                this.trail.push({
+
+                    x: this.x,
+                    y: this.y,
+
+                    size: 4 + Math.random()*2,
+
+                    alpha: 1
+
+                });
+
+            }
+
+        }
+
+
+
+        // Fade existing stars
+
+        for(let i=this.trail.length-1;i>=0;i--){
+
+            const star = this.trail[i];
+
+            star.alpha -= 0.03;
+
+            star.size *= 0.97;
+
+            if(star.alpha <= 0){
+
+                this.trail.splice(i,1);
+
+            }
+
+        }
+
+
+
+        if(this.trail.length > 40){
+
+            this.trail.shift();
+
+        }
+
+
+
+        // ----------------------------
+        // Hit cooldown
+        // ----------------------------
 
         if(this.hitCooldown > 0){
 
@@ -190,90 +194,68 @@ if(this.trail.length>40){
 
 
 
+        // ----------------------------
+        // Move
+        // ----------------------------
+
+        this.x += this.dx;
+
+        this.y += this.dy;
 
 
 
-        // Top wall
+        // ----------------------------
+        // Top Wall
+        // ----------------------------
 
-
-        if(
-            this.y - this.radius <= 0
-        ){
-
+        if(this.y - this.radius <= 0){
 
             this.y = this.radius;
 
-
             this.dy *= -1;
 
-
             this.playWallSound();
-
 
         }
 
 
 
+        // ----------------------------
+        // Bottom Wall
+        // ----------------------------
 
-
-
-        // Bottom wall
-
-
-        if(
-            this.y + this.radius >= canvas.height
-        ){
-
+        if(this.y + this.radius >= canvas.height){
 
             this.y =
                 canvas.height - this.radius;
 
-
-
             this.dy *= -1;
-
 
             this.playWallSound();
 
-
         }
 
 
 
-
-
-
-
-        this.trailTimer++;
-
-
-
+        // ----------------------------
+        // Ball Trail Particles
+        // ----------------------------
 
         if(
-            this.trailTimer % 2 === 0 &&
-            typeof particles !== "undefined"
+            typeof particles !== "undefined" &&
+            typeof particles.ballTrail === "function"
         ){
-
 
             particles.ballTrail(this);
 
-
         }
 
-
-
     }
-
-
-
-
-
-
-
+        // =====================================
+    // Paddle Collision
+    // =====================================
 
     bounce(paddle){
-
-
 
         if(this.hitCooldown > 0){
 
@@ -284,6 +266,7 @@ if(this.trail.length>40){
 
 
         const hitPosition =
+
             (
                 this.y -
                 (
@@ -298,13 +281,10 @@ if(this.trail.length>40){
 
 
 
-
-
+        // Maximum bounce angle
         const angle =
             hitPosition *
             Math.PI / 4;
-
-
 
 
 
@@ -313,31 +293,24 @@ if(this.trail.length>40){
 
 
 
-
-
-        this.speed += 0.25;
-
-
+        // Gradually increase speed
+        this.speed = Math.min(
+            this.speed + 0.25,
+            24
+        );
 
 
 
         this.dx =
-            Math.cos(angle)
-            *
-            this.speed
-            *
+            Math.cos(angle) *
+            this.speed *
             direction;
 
 
 
         this.dy =
-            Math.sin(angle)
-            *
+            Math.sin(angle) *
             this.speed;
-
-
-
-
 
 
 
@@ -345,9 +318,12 @@ if(this.trail.length>40){
 
 
 
+        // Paddle particles
 
-
-        if(typeof particles !== "undefined"){
+        if(
+            typeof particles !== "undefined" &&
+            typeof particles.paddleHit === "function"
+        ){
 
             particles.paddleHit(
 
@@ -363,22 +339,18 @@ if(this.trail.length>40){
 
 
 
+        // Paddle sound
 
-
-
-        if(typeof sounds !== "undefined"){
+        if(
+            typeof sounds !== "undefined" &&
+            typeof sounds.hit === "function"
+        ){
 
             sounds.hit();
 
         }
 
-
-
     }
-
-
-
-
 
 
 
@@ -386,42 +358,27 @@ if(this.trail.length>40){
 
     checkPaddleCollision(paddle){
 
-
-
         if(
 
-
-            this.x + this.radius > paddle.x &&
-
+            this.x + this.radius >
+            paddle.x &&
 
             this.x - this.radius <
             paddle.x + paddle.width &&
 
-
             this.y + this.radius >
             paddle.y &&
-
 
             this.y - this.radius <
             paddle.y + paddle.height
 
-
-
         ){
-
 
             this.bounce(paddle);
 
-
         }
 
-
-
     }
-
-
-
-
 
 
 
@@ -429,111 +386,85 @@ if(this.trail.length>40){
 
     playWallSound(){
 
-
-
-        if(typeof sounds !== "undefined"){
+        if(
+            typeof sounds !== "undefined" &&
+            typeof sounds.wall === "function"
+        ){
 
             sounds.wall();
 
         }
 
-
     }
-
-
-
-
-
-
-
-
+        // =====================================
+    // Draw
+    // =====================================
 
     draw(ctx){
 
+        // ----------------------------
+        // Draw Star Trail
+        // ----------------------------
 
+        for(const star of this.trail){
+
+            ctx.save();
+
+            ctx.translate(
+                star.x,
+                star.y
+            );
+
+            ctx.globalAlpha =
+                star.alpha;
+
+            ctx.strokeStyle =
+                "#FFF8AA";
+
+            ctx.lineWidth = 2;
+
+            ctx.beginPath();
+
+            ctx.moveTo(
+                -star.size,
+                0
+            );
+
+            ctx.lineTo(
+                star.size,
+                0
+            );
+
+            ctx.moveTo(
+                0,
+                -star.size
+            );
+
+            ctx.lineTo(
+                0,
+                star.size
+            );
+
+            ctx.stroke();
+
+            ctx.restore();
+
+        }
+
+
+
+        // ----------------------------
+        // Ball
+        // ----------------------------
 
         ctx.save();
 
-// ----------------------------
-// Star Trail
-// ----------------------------
-
-for(const star of this.trail){
-
-    ctx.save();
-
-    ctx.globalAlpha = star.alpha;
-
-    ctx.fillStyle = "#FFF8AA";
-
-    ctx.beginPath();
-
-    ctx.arc(
-
-        star.x,
-
-        star.y,
-
-        star.size,
-
-        0,
-
-        Math.PI*2
-
-    );
-
-    ctx.fill();
-
-    ctx.restore();
-
-    ctx.save();
-
-ctx.translate(
-
-    star.x,
-
-    star.y
-
-);
-
-ctx.globalAlpha = star.alpha;
-
-ctx.strokeStyle = "#FFF8AA";
-
-ctx.lineWidth = 2;
-
-
-
-ctx.beginPath();
-
-ctx.moveTo(-star.size,0);
-
-ctx.lineTo(star.size,0);
-
-ctx.moveTo(0,-star.size);
-
-ctx.lineTo(0,star.size);
-
-ctx.stroke();
-
-ctx.restore();
-    
-}
-
         ctx.shadowBlur = 25;
-
-        ctx.shadowColor = "cyan";
-
-
+        ctx.shadowColor = this.glowColor;
 
         ctx.fillStyle = this.color;
 
-
-
-
         ctx.beginPath();
-
-
 
         ctx.arc(
 
@@ -549,55 +480,43 @@ ctx.restore();
 
         );
 
-
-
         ctx.fill();
 
 
 
+        // ----------------------------
+        // Golden Ball Shine
+        // ----------------------------
 
+        if(this.color === "#FFD700"){
 
+            ctx.fillStyle =
+                "rgba(255,255,255,.65)";
 
+            ctx.beginPath();
 
-        ctx.shadowBlur = 0;
+            ctx.arc(
 
+                this.x - this.radius/3,
 
+                this.y - this.radius/3,
 
-        ctx.fillStyle = this.color;
+                this.radius/3,
 
+                0,
 
+                Math.PI*2
 
-        ctx.beginPath();
+            );
 
+            ctx.fill();
 
-
-        ctx.arc(
-
-            this.x,
-
-            this.y,
-
-            this.radius / 2,
-
-            0,
-
-            Math.PI * 2
-
-        );
-
-
-
-        ctx.fill();
-
+        }
 
 
 
         ctx.restore();
 
-
-
     }
-
-
 
 }
